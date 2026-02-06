@@ -20,6 +20,7 @@ export class AppComponent implements OnInit{
     this.authService.getPosts().subscribe({
       next: response => {
         this.posts = response.results; // según paginación de tu backend
+        console.log('Respuesta backend', response);
       },
       error: (err) => {
         console.error('Error al conectar con backend', err);
