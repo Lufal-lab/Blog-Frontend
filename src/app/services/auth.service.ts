@@ -7,11 +7,18 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AuthService {
 
+  //prueba de conección al endpoint
+  private apiUrl = 'http://localhost:8000/api/posts/'; // tu endpoint de posts
+
   constructor(
     private http: HttpClient,
   ) { }
 
   private currentUser: any = null;
+
+  getPosts(): Observable<any> {
+    return this.http.get<any>(this.apiUrl);
+  }
 
   login(credentials: any): Observable<any> {
     return this.http.post('/api/users/login/', credentials, {
