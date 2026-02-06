@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
+import { Post } from '../models/post.model';
+import { Paginated } from '../models/paginated.model';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
   //prueba de conección al endpoint
-  private apiUrl = 'http://localhost:8000/api/posts/'; // tu endpoint de posts
+  private apiUrl = '/api/posts/'; // tu endpoint de posts
 
   constructor(
     private http: HttpClient,
@@ -16,8 +19,8 @@ export class AuthService {
 
   private currentUser: any = null;
 
-  getPosts(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+  getPosts(): Observable<Paginated<Post>> {
+    return this.http.get<Paginated<Post>>(this.apiUrl);
   }
 
   login(credentials: any): Observable<any> {
@@ -33,7 +36,7 @@ export class AuthService {
   getCurrentUser(){
     return this.currentUser;
   }
-  
+
   logout() {
     this.currentUser = null;
   }

@@ -1,6 +1,8 @@
 import { Component, OnInit} from '@angular/core';
 
-import { AuthService } from './services/auth.service'; 
+import { AuthService } from './services/auth.service';
+
+import { Post } from './models/post.model';
 
 
 @Component({
@@ -16,8 +18,8 @@ export class AppComponent implements OnInit{
 
   ngOnInit() {
     this.authService.getPosts().subscribe({
-      next: (data) => {
-        this.posts = data.results || data; // según paginación de tu backend
+      next: response => {
+        this.posts = response.results; // según paginación de tu backend
       },
       error: (err) => {
         console.error('Error al conectar con backend', err);

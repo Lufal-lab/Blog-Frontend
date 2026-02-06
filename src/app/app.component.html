@@ -6,7 +6,9 @@
 
 <h1>Prueba Backend</h1>
     <ul>
-      <li *ngFor="let post of posts">{{ post.title }}</li>
+      <li *ngFor="let post of posts">
+        {{ post.title }} - {{ post.author_email}}
+      </li>
     </ul>
 
 <router-outlet></router-outlet>
