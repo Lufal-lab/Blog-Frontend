@@ -1,6 +1,8 @@
 import { Component, OnInit} from '@angular/core';
 
 import { AuthService } from './services/auth.service';
+import { PostsService } from './services/posts.service';
+
 
 import { Post } from './models/post.model';
 
@@ -14,10 +16,10 @@ export class AppComponent implements OnInit{
   title = 'blog-frontend-avanzatech';
   posts: any[] = [];
 
-  constructor(private authService: AuthService) {}
+  constructor(private postsService: PostsService) {}
 
   ngOnInit() {
-    this.authService.getPosts().subscribe({
+    this.postsService.getPosts().subscribe({
       next: response => {
         this.posts = response.results; // según paginación de tu backend
         console.log('Respuesta backend', response);
