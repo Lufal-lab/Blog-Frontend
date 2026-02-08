@@ -1,0 +1,15 @@
+<div>
+  <button
+    (click)="previousPage.emit()"
+    [disabled]="!previous"
+    >
+    Anterior
+  </button>
+
+  <button
+  (click)="nextPage.emit()"
+  [disabled]="!next"
+  >
+    Siguiente
+  </button>
+</div>

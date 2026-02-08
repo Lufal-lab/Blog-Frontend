@@ -33,7 +33,7 @@ export class PostsService {
 
   private handleError(error: HttpErrorResponse) {
     console.log('Error in PostService: ', error);
-    return throwError(() => new Error('Error communicating with the backend'))
+    return throwError(() => error);
   }
 
   // createPost(post: PostCreate): Observable<Post> {
