@@ -3,6 +3,8 @@ import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse} from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
+import { PaginationService } from './pagination.service';
+
 import { Post } from '../models/post.model';
 import { Paginated } from '../models/paginated.model';
 
@@ -15,6 +17,7 @@ export class PostsService {
 
   constructor(
     private http: HttpClient,
+    private paginationService: PaginationService,
   ) { }
 
   getPosts(): Observable<Paginated<Post>> {
@@ -29,6 +32,10 @@ export class PostsService {
     .pipe(
       catchError(this.handleError)
     );
+  }
+
+  getByUrl(url: string): Observable<Paginated<Post>> {
+    return this.paginationService.getByUrl<Post>(url);
   }
 
   private handleError(error: HttpErrorResponse) {

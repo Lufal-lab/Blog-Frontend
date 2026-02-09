@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { PostsService } from 'src/app/services/posts.service';
+
 import { Post } from 'src/app/models/post.model';
 import { Paginated } from 'src/app/models/paginated.model';
 
@@ -37,9 +38,26 @@ export class PostsComponent implements OnInit {
     this.error = null;
 
     this.postsService.getPosts().subscribe({
-      next: (response) => {
-        this.posts = response.results;
+      next: (response: Paginated<Post>) =>
+      this.setPostsResponse(response),
+      error: () => {
+        this.error = 'No se pudieron cargar los posts';
         this.loading = false;
+      }
+    });
+  }
+
+    /**
+   * Carga la página siguiente usando la URL del backend
+   */
+  loadNext(): void {
+    if (!this.pagination.next) return;
+
+    this.loading = true;
+
+    this.postsService.getByUrl(this.pagination.next).subscribe({
+      next: (response: Paginated<Post>) => {
+        this.setPostsResponse(response);
       },
       error: () => {
         this.error = 'No se pudieron cargar los posts';
@@ -47,5 +65,35 @@ export class PostsComponent implements OnInit {
       }
     });
   }
+
+  /**
+   * Carga la página anterior usando la URL del backend
+   */
+  loadPrevious(): void {
+    if (!this.pagination.previous) return;
+
+    this.loading = true;
+
+    this.postsService.getByUrl(this.pagination.previous).subscribe({
+      next: (response: Paginated<Post>) => {
+        this.setPostsResponse(response);
+      },
+      error: () => {
+        this.error = 'No se pudieron cargar los posts';
+        this.loading = false;
+      }
+    });
+  }
+
+  /**
+   * Método centralizado para procesar la respuesta paginada
+   */
+  private setPostsResponse(response: Paginated<Post>): void {
+    this.posts = response.results;
+    this.pagination.next = response.next ? response.next.replace('http://127.0.0.1:8000', '') : null;
+    this.pagination.previous = response.previous ? response.previous.replace('http://127.0.0.1:8000', '') : null;
+    this.loading = false;
+  }
+
 
 }
