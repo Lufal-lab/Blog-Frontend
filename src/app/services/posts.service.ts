@@ -5,7 +5,7 @@ import { catchError } from 'rxjs/operators';
 
 import { PaginationService } from './pagination.service';
 
-import { Post } from '../models/post.model';
+import { CreatePostDTO, Post, UpdatePostDTO } from '../models/post.model';
 import { Paginated } from '../models/paginated.model';
 
 @Injectable({
@@ -28,7 +28,7 @@ export class PostsService {
   }
 
   getPostById(id: number): Observable<Post> {
-    return this.http.get<Post>(`/api/posts/${id}/`)
+    return this.http.get<Post>(`${this.apiUrl}${id}/`)
     .pipe(
       catchError(this.handleError)
     );
@@ -36,6 +36,18 @@ export class PostsService {
 
   getByUrl(url: string): Observable<Paginated<Post>> {
     return this.paginationService.getByUrl<Post>(url);
+  }
+
+  createPost(post: CreatePostDTO): Observable<Post> {
+    return this.http.post<Post>(this.apiUrl, post);
+  }
+
+  updatePost(id: number, post: UpdatePostDTO): Observable<Post> {
+    return this.http.patch<Post>(`${this.apiUrl}${id}/`, post);
+  }
+
+  dedetePost(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}${id}/`);
   }
 
   private handleError(error: HttpErrorResponse) {

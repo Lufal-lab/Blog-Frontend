@@ -13,6 +13,9 @@ import { PostsComponent } from './pages/posts/posts.component';
 import { PostIdComponent } from './pages/post-id/post-id.component';
 import { PaginationComponent } from './shared/components/pagination/pagination.component';
 
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,7 +32,13 @@ import { PaginationComponent } from './shared/components/pagination/pagination.c
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

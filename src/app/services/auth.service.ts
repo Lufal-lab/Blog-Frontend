@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
-import { Post } from '../models/post.model';
-import { Paginated } from '../models/paginated.model';
+import { AuthCredentials, User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,38 +12,52 @@ import { Paginated } from '../models/paginated.model';
 export class AuthService {
 
   //prueba de conección al endpoint
-  private apiUrl = '/api/posts/'; // tu endpoint de posts
+  private apiUrl = '/api/users/'; // tu endpoint de posts
+  private isLoggedIn$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private http: HttpClient,
   ) { }
 
-  private currentUser: any = null;
-
-  getPosts(): Observable<Paginated<Post>> {
-    return this.http.get<Paginated<Post>>(this.apiUrl);
-  }
-
-  login(credentials: any): Observable<any> {
-    return this.http.post('/api/users/login/', credentials, {
+  login(credentials: AuthCredentials): Observable<unknown> {
+    return this.http.post(`${this.apiUrl}login/`, credentials, {
       withCredentials: true,
-    });
+    }
+  )
+  .pipe(
+      tap(() => this.isLoggedIn$.next(true)))
+  ;
   }
 
-  setCurrentUser(user:any){
-    this.currentUser = user;
+  logout(): Observable<unknown> {
+    return this.http.post(
+      `${this.apiUrl}logout/`,
+      {},
+      {
+        withCredentials: true
+      }
+    )
+    .pipe(
+      tap(() => this.isLoggedIn$.next(false)))
+    ;
   }
 
-  getCurrentUser(){
-    return this.currentUser;
+  authStatus() {
+    return this.isLoggedIn$.asObservable();
   }
 
-  logout() {
-    this.currentUser = null;
-  }
+  // setCurrentUser(user:any){
+  //   this.currentUser = user;
+  // }
 
-  isLoggedIn(): boolean {
-    return this.currentUser != null;
-  }
+  // getCurrentUser(){
+  //   return this.currentUser;
+  // }
+
+
+
+  // isLoggedIn(): boolean {
+  //   return this.currentUser != null;
+  // }
 
 }

@@ -15,3 +15,13 @@ export interface Post {
   privacy_read: PrivacyLevel;
   privacy_write: PrivacyLevel;
 }
+
+export interface CreatePostDTO extends Pick
+<Post, 'title' | 'content' | 'privacy_read' | 'privacy_write' > {
+}
+
+export interface UpdatePostDTO extends Partial<CreatePostDTO> {
+}
+
+
+
