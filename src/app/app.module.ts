@@ -2,35 +2,43 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
-import { ReactiveFormsModule } from '@angular/forms';
+// import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
+import { CoreModule } from './core/core.module';
+
 import { AppComponent } from './app.component';
-import { NotFoundComponent } from './components/not-found/not-found.component';
-import { LoginFormComponent } from './pages/login-form/login-form.component';
-import { RegisterFormComponent } from './pages/register-form/register-form.component';
-import { PostsComponent } from './pages/posts/posts.component';
-import { PostIdComponent } from './pages/post-id/post-id.component';
-import { PaginationComponent } from './shared/components/pagination/pagination.component';
+import { NotFoundComponent } from './features/not-found/not-found.component';
+// import { LoginFormComponent } from './features/auth/login-form/login-form.component';
+// import { RegisterFormComponent } from './features/auth/register-form/register-form.component';
+// import { PostIdComponent } from './features/pages/post-id/post-id.component';
+// import { PaginationComponent } from './shared/components/pagination/pagination.component';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthInterceptor } from './interceptors/auth.interceptor';
-
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+// import { HeaderComponent } from './shared/components/header/header.component';
+import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
+import { SharedModule } from './shared/shared.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @NgModule({
   declarations: [
     AppComponent,
     NotFoundComponent,
-    LoginFormComponent,
-    RegisterFormComponent,
-    PostsComponent,
-    PostIdComponent,
-    PaginationComponent
+    // HeaderComponent,
+    MainLayoutComponent,
+    // LoginFormComponent,
+    // RegisterFormComponent,
+    // PostIdComponent,
+    // PaginationComponent
   ],
   imports: [
     BrowserModule,
+    CoreModule,
+    SharedModule,
     AppRoutingModule,
-    ReactiveFormsModule,
+    // ReactiveFormsModule,
     HttpClientModule,
+    BrowserAnimationsModule,
   ],
   providers: [
     {

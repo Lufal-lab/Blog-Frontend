@@ -1,0 +1,39 @@
+<!--
+
+<nav class="navbar">
+  <span class="logo">My Blog</span>
+
+  <div class="actions">
+    NO autenticado -->
+    <!-- <ng-container *ngIf="!(isLoggedIn$ | async); else logged">
+      <a routerLink="/auth/login">Login</a>
+      <a routerLink="/auth/register">Register</a>
+    </ng-container>
+
+     Autenticado -->
+    <!-- <ng-template #logged>
+      <button (click)="logout()">Logout</button>
+    </ng-template>
+  </div> -->
+<!-- </nav> -->
+
+<mat-toolbar class="app-toolbar" color="transparent">
+  <span class="logo">My Blog</span>
+
+  <span class="spacer"></span>
+
+  <!-- Usuario no autenticado -->
+  <ng-container *ngIf="!(isLoggedIn$ | async); else logged">
+    <a mat-button routerLink="/auth/login">Login</a>
+    <a mat-button routerLink="/auth/register">Register</a>
+  </ng-container>
+
+  <!-- Usuario autenticado -->
+  <ng-template #logged>
+    <span class="user-email">Welcome, {{ (userEmail$ | async)?.email }}</span>
+    <button mat-icon-button (click)="logout()" aria-label="Logout">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </ng-template>
+</mat-toolbar>
+

@@ -1,0 +1,82 @@
+<div class="container">
+  <div class="login">
+    <mat-card class="register-card">
+      <h2>User Login</h2>
+
+      <form [formGroup]="form" (ngSubmit)="login($event)">
+
+        <mat-form-field
+          appearance="outline"
+          floatLabel="always"
+          class="full-width"
+          subscriptSizing="dynamic"
+        >
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email">
+          <mat-error *ngIf="form.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="form.get('email')?.hasError('email')">
+            Invalid email format
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="outline"
+          floatLabel="always"
+          class="full-width"
+          subscriptSizing="dynamic"
+        >
+          <mat-label>Password</mat-label>
+          <input
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="password">
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hidePassword = !hidePassword"
+            [attr.aria-label]="'Toggle password visibility'">
+            <mat-icon>
+              {{ hidePassword ? 'visibility_off' : 'visibility' }}
+            </mat-icon>
+          </button>
+          <mat-error *ngIf="form.get('password')?.hasError('required')">
+            Password is required
+          </mat-error>
+        </mat-form-field>
+
+        <div class="actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+            Submit
+          </button>
+
+          <button mat-button type="button" (click)="cancel()">
+            Cancel
+          </button>
+        </div>
+
+        <p class="login-link">
+          Don't have an account?
+          <a mat-button color="accent" routerLink="/auth/register">Register</a>
+        </p>
+
+      </form>
+    </mat-card>
+
+    <div class="auth-error" *ngIf="error">
+    Authentication Error: Wrong username or password
+    </div>
+
+  </div>
+
+</div>
+
+<!-- <mat-card *ngIf="error" class="error-card">
+  <mat-error>
+    {{ error }}
+  </mat-error>
+</mat-card> -->
+
+

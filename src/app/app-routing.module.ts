@@ -1,30 +1,51 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PostsComponent } from './pages/posts/posts.component';
-import { PostIdComponent } from './pages/post-id/post-id.component';
-import { LoginFormComponent } from './pages/login-form/login-form.component';
-import { NotFoundComponent } from './components/not-found/not-found.component';
+
+import { NotFoundComponent } from './features/not-found/not-found.component';
+import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 
 const routes: Routes = [
-  { path: 'login',
-    component: LoginFormComponent },
   {
-    path: 'posts',
-    component: PostsComponent
+    path: 'auth',
+    loadChildren: () =>
+      import('./features/auth/auth.module')
+        .then(m => m.AuthModule)
   },
-  {
-    path: 'posts/:id',
-    component: PostIdComponent
-  },
+
   {
     path: '',
-    redirectTo: 'posts',
-    pathMatch: 'full'
+    component: MainLayoutComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+        import('./features/posts/posts.module')
+        .then(m =>m.PostsModule)
+      }
+    ]
+
   },
-  {
-    path: '**',
-    component: NotFoundComponent
-  }
+
+
+  // { path: 'login',
+  //   component: LoginFormComponent },
+  // {
+  //   path: 'posts',
+  //   component: PostsComponent
+  // },
+  // {
+  //   path: 'posts/:id',
+  //   component: PostIdComponent
+  // },
+  // {
+  //   path: '',
+  //   redirectTo: 'posts',
+  //   pathMatch: 'full'
+  // },
+  // {
+  //   path: '**',
+  //   component: NotFoundComponent
+  // }
 ];
 
 @NgModule({
