@@ -3,16 +3,15 @@ import { TemplateBinding } from "@angular/compiler";
 export interface User {
   id: number;
   email: string;
-  team: Team;
-  is_active: boolean;
-  is_staff: boolean;
+  team: string;
+  // team: Team;
 }
 
 
-export interface Team {
-  id: number;
-  name: string;
-}
+// export interface Team {
+//   id: number;
+//   name: string;
+// }
 
 export interface AuthCredentials {
   email: string;

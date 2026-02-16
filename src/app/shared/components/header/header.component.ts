@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { map, Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -14,6 +15,7 @@ export class HeaderComponent {
 
   constructor(
     private authService: AuthService,
+    private router: Router,
   ){
     this.isLoggedIn$ = this.authService.authStatus();
     this.userEmail$ = this.authService.currentUser();
@@ -21,7 +23,7 @@ export class HeaderComponent {
 
   logout(){
     this.authService.logout().subscribe(() => {
-      location.reload();
+      this.router.navigate(['/login']);
     });
   }
 

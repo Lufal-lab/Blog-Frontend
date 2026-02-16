@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { PostsService } from './posts.service';
-import { Post } from '../../core/models/post.model';
-import { Paginated } from '../../core/models/paginated.model'
-import { PrivacyLevel } from '../../core/models/privacy-level.enum';
+import { Post } from 'src/app/core/models/post.model';
+import { Paginated } from 'src/app/core/models/paginated.model';
+import { PrivacyLevel } from 'src/app/core/models/privacy-level.enum';
 
 describe('PostsService', () => {
   let service: PostsService;

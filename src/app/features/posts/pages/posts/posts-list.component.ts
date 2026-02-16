@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
-import { PostsService } from 'src/app/features/services/posts.service';
+import { PostsService } from '../../services/posts.service';
 
 import { Post } from 'src/app/core/models/post.model';
 import { Paginated } from 'src/app/core/models/paginated.model';
 
 @Component({
   selector: 'app-posts',
-  templateUrl: './posts.component.html',
-  styleUrls: ['./posts.component.sass']
+  templateUrl: './posts-list.component.html',
+  styleUrls: ['./posts-list.component.sass']
 })
 export class PostsComponent implements OnInit {
 

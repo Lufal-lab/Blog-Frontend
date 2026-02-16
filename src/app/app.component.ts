@@ -2,9 +2,6 @@ import { Component, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from './core/services/auth.service';
-import { PostsService } from './features/services/posts.service';
-import { CommentsService } from './features/services/comments.service';
-import { LikesService } from './features/services/likes.service';
 
 import { Post } from './core/models/post.model';
 
@@ -20,9 +17,6 @@ export class AppComponent{
   // posts: any[] = [];
 
   constructor(
-    private postsService: PostsService,
-    private commentsService: CommentsService,
-    private likesService: LikesService,
     private router: Router,
     private authService: AuthService,
   ) {}

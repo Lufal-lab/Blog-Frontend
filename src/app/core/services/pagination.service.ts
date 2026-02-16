@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { Paginated } from '../../core/models/paginated.model';
+import { Paginated } from 'src/app/core/models/paginated.model';
 
 @Injectable({
   providedIn: 'root'

@@ -3,10 +3,10 @@ import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse} from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
-import { PaginationService } from './pagination.service';
+import { PaginationService } from 'src/app/core/services/pagination.service';
 
-import { CreatePostDTO, Post, UpdatePostDTO } from '../../core/models/post.model';
-import { Paginated } from '../../core/models/paginated.model';
+import { CreatePostDTO, Post, UpdatePostDTO } from 'src/app/core/models/post.model';
+import { Paginated } from 'src/app/core/models/paginated.model';
 
 @Injectable({
   providedIn: 'root'

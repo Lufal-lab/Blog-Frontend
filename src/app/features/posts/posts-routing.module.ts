@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { PostsComponent } from './pages/posts/posts.component';
-import { PostIdComponent } from './pages/post-id/post-id.component';
+import { PostsComponent } from './pages/posts/posts-list.component';
+import { PostIdComponent } from './components/post-id/post-card.component';
 
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
 

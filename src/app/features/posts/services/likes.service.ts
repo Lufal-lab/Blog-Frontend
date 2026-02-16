@@ -3,8 +3,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { Like } from '../../core/models/like.model';
-import { Paginated } from '../../core/models/paginated.model';
+import { Like } from 'src/app/core/models/like.model';
+import { Paginated } from 'src/app/core/models/paginated.model';
 
 @Injectable({
   providedIn: 'root'

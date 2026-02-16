@@ -1,0 +1,106 @@
+<mat-card class="post-card">
+
+  <!-- HEADER -->
+<div class="header-row">
+
+  <h2 class="post-title">
+    {{ post.title }}
+  </h2>
+
+  <div class="header-meta">
+
+    <span class="team-badge">
+      Team {{ post.author_team }}
+    </span>
+
+    <span class="author-name">
+      {{ post.author_email }}
+    </span>
+
+    <span class="meta-info">
+      {{ post.created_at | date:'medium' }}
+    </span>
+
+  </div>
+
+</div>
+
+  <!-- EXCERPT -->
+  <div class="post-excerpt">
+    <p>
+      {{ post.content | slice:0:250 }}
+      <ng-container *ngIf="post.content.length > 250">
+        ...
+        <a class="show-more" (click)="openPost()">Show more</a>
+      </ng-container>
+    </p>
+  </div>
+
+
+  <!-- STATS + ACTIONS -->
+  <div class="post-actions-row">
+
+    <!-- Left side: counts -->
+    <div class="counts">
+      <span class="clickable" (click)="openLikes()">
+        {{ post.likes_count }} Likes
+      </span>
+
+      <span class="clickable" (click)="goToComments()">
+        {{ post.comments_count }} Comments
+      </span>
+    </div>
+
+    <!-- Right side: buttons -->
+    <div class="buttons">
+
+      <button
+        mat-icon-button
+        class="action-btn"
+        (click)="likePost()">
+
+        <mat-icon>
+          favorite_border
+          <!-- {{ post.likedByUser ? 'favorite' : 'favorite_border' }} -->
+        </mat-icon>
+
+      </button>
+
+      <button
+        mat-icon-button
+        class="action-btn"
+        (click)="goToComments()">
+        <mat-icon>chat_bubble_outline</mat-icon>
+      </button>
+
+      <button
+        mat-icon-button
+        class="action-btn"
+        (click)="editPost()">
+        <mat-icon>edit</mat-icon>
+      </button>
+
+      <button
+        mat-icon-button
+        class="action-btn"
+        (click)="deletePost()">
+        <mat-icon>delete</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- PRIVACY (TEMPORAL) -->
+  <div class="privacy-row">
+    <span class="privacy-badge read">
+      Read: {{ post.privacy_read }}
+    </span>
+
+    <span class="privacy-badge write">
+      Write: {{ post.privacy_write }}
+    </span>
+  </div>
+
+</mat-card>
