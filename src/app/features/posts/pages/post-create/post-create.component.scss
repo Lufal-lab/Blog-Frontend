@@ -1,0 +1,26 @@
+.full-width {
+  width: 100%;
+}
+
+.permissions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.header {
+  font-weight: bold;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}

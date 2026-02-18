@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { AuthService } from 'src/app/core/services/auth.service';
 import { AlertService } from 'src/app/core/services/alert.service';
@@ -31,8 +30,8 @@ export class RegisterFormComponent {
   register(event: Event){
     event.preventDefault();
     if (this.form.valid) {
-      const value = this.form.value;
-      this.authService.createUser({email: value.email, password: value.password})
+      const { email, password } = this.form.value;
+      this.authService.createUser({ email, password })
         .subscribe({
           next: () => {
             this.alertService.success(
@@ -54,7 +53,11 @@ export class RegisterFormComponent {
                   backend: backendErrors.password
                 });
               }
-            }} });
+            }
+          }
+        });
+    }else {
+      this.form.markAllAsTouched();
     }
   }
 
@@ -68,7 +71,7 @@ export class RegisterFormComponent {
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]],
     }, {
-      Validators: passwordMatchValidator
+      validators: passwordMatchValidator
     });
 
   }

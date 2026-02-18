@@ -1,0 +1,23 @@
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
+.toast-success {
+  --mdc-snackbar-container-color: #2e7d32; // Verde oscuro
+  --mdc-snackbar-supporting-text-color: white;
+}
+
+// Error (Rojo)
+.toast-error {
+  --mdc-snackbar-container-color: #d32f2f; // Rojo
+  --mdc-snackbar-supporting-text-color: white;
+}
+
+// Advertencia (Naranja)
+.toast-warning {
+  --mdc-snackbar-container-color: #ed6c02; // Naranja
+  --mdc-snackbar-supporting-text-color: white;
+}
+
+// Información (Azul)
+.toast-info {
+  --mdc-snackbar-container-color: #0288d1; // Azul
+  --mdc-snackbar-supporting-text-color: white;
+}

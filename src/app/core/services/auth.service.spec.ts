@@ -13,6 +13,14 @@ describe('AuthService', () => {
 
   const apiUrl = '/api/users/';
 
+  const mockUser: User = {
+    id: 1,
+    email: 'test@test.com',
+    team: 'A',
+    is_superuser: false,
+    is_staff: false
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -31,10 +39,9 @@ describe('AuthService', () => {
   // CREATION + INITIAL SESSION
   // ============================
 
-  it('should be created', () => {
+  it('should be created and call checkSession on init', () => {
     expect(service).toBeTruthy();
 
-    // constructor triggers checkSession()
     const req = httpMock.expectOne(`${apiUrl}me/`);
     expect(req.request.method).toBe('GET');
     expect(req.request.withCredentials).toBeTrue();
@@ -50,17 +57,14 @@ describe('AuthService', () => {
   });
 
   it('should set user and authenticated true when session is valid', () => {
-    const user: User = { id: 1, email: 'test@test.com', team: 'A' };
-
     const req = httpMock.expectOne(`${apiUrl}me/`);
-    req.flush(user);
+    req.flush(mockUser);
 
     expect(service.isAuthenticated()).toBeTrue();
 
-    let currentUser: User | null = null;
-    service.currentUser().subscribe(u => currentUser = u);
-
-    expect(currentUser).toEqual(jasmine.objectContaining(user));
+    service.currentUser().subscribe(user => {
+      expect(user).toEqual(jasmine.objectContaining(mockUser));
+    });
   });
 
   // ============================
@@ -68,7 +72,6 @@ describe('AuthService', () => {
   // ============================
 
   it('should call login endpoint with POST and credentials', () => {
-    // consume initial constructor call
     httpMock.expectOne(`${apiUrl}me/`).flush(null);
 
     const credentials: AuthCredentials = {
@@ -85,9 +88,8 @@ describe('AuthService', () => {
 
     loginReq.flush({});
 
-    // login triggers checkSession()
     const meReq = httpMock.expectOne(`${apiUrl}me/`);
-    meReq.flush({ id: 1, email: 'test@test.com', team: 'A' });
+    meReq.flush(mockUser);
   });
 
   it('should set authenticated true after successful login', () => {
@@ -101,10 +103,27 @@ describe('AuthService', () => {
     service.login(credentials).subscribe();
 
     httpMock.expectOne(`${apiUrl}login/`).flush({});
-    httpMock.expectOne(`${apiUrl}me/`)
-      .flush({ id: 1, email: 'test@test.com', team: 'A' });
+    httpMock.expectOne(`${apiUrl}me/`).flush(mockUser);
 
     expect(service.isAuthenticated()).toBeTrue();
+  });
+
+  it('should not authenticate if login fails', () => {
+    httpMock.expectOne(`${apiUrl}me/`).flush(null);
+
+    const credentials: AuthCredentials = {
+      email: 'test@test.com',
+      password: 'wrong'
+    };
+
+    service.login(credentials).subscribe({
+      error: () => {}
+    });
+
+    const loginReq = httpMock.expectOne(`${apiUrl}login/`);
+    loginReq.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
+
+    expect(service.isAuthenticated()).toBeFalse();
   });
 
   // ============================
@@ -127,12 +146,17 @@ describe('AuthService', () => {
     httpMock.expectOne(`${apiUrl}me/`).flush(null);
 
     (service as any).isLoggedIn$.next(true);
-    (service as any).currentUser$.next({ id: 1, email: 'test@test.com' });
+    (service as any).currentUser$.next(mockUser);
 
     service.logout().subscribe();
     httpMock.expectOne(`${apiUrl}logout/`).flush({});
 
     expect(service.isAuthenticated()).toBeFalse();
+
+    let currentUser: User | null = undefined as any;
+    service.currentUser().subscribe(u => currentUser = u);
+
+    expect(currentUser).toBeNull();
   });
 
   // ============================
@@ -155,6 +179,27 @@ describe('AuthService', () => {
     expect(req.request.withCredentials).toBeTrue();
 
     req.flush({});
+  });
+
+  it('should handle register error properly', () => {
+    httpMock.expectOne(`${apiUrl}me/`).flush(null);
+
+    const userData = {
+      email: 'new@test.com',
+      password: '123456'
+    };
+
+    service.createUser(userData).subscribe({
+      error: (err) => {
+        expect(err.status).toBe(400);
+      }
+    });
+
+    const req = httpMock.expectOne(`${apiUrl}register/`);
+    req.flush(
+      { email: ['Already exists'] },
+      { status: 400, statusText: 'Bad Request' }
+    );
   });
 
   // ============================

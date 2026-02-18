@@ -1,32 +1,36 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RegisterFormComponent } from './register-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { of, throwError } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
+import { RegisterFormComponent } from './register-form.component';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { AlertService } from 'src/app/core/services/alert.service';
 
 describe('RegisterFormComponent', () => {
+
   let component: RegisterFormComponent;
   let fixture: ComponentFixture<RegisterFormComponent>;
-  let authService: jasmine.SpyObj<AuthService>;
-  let router: jasmine.SpyObj<Router>;
-  let snackBar: jasmine.SpyObj<MatSnackBar>;
+  let authServiceSpy: jasmine.SpyObj<AuthService>;
+  let routerSpy: jasmine.SpyObj<Router>;
+  let alertSpy: jasmine.SpyObj<AlertService>;
 
   beforeEach(async () => {
-    authService = jasmine.createSpyObj('AuthService', ['createUser']);
-    router = jasmine.createSpyObj('Router', ['navigate']);
-    snackBar = jasmine.createSpyObj('MatSnackBar', ['open']);
+
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['createUser']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    alertSpy = jasmine.createSpyObj('AlertService', ['success']);
 
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
       declarations: [RegisterFormComponent],
+      imports: [
+        ReactiveFormsModule,
+      ],
       providers: [
-        { provide: AuthService, useValue: authService },
-        { provide: Router, useValue: router },
-        { provide: MatSnackBar, useValue: snackBar }
+        { provide: AuthService, useValue: authServiceSpy },
+        { provide: Router, useValue: routerSpy },
+        { provide: AlertService, useValue: alertSpy }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
@@ -36,90 +40,97 @@ describe('RegisterFormComponent', () => {
     fixture.detectChanges();
   });
 
-  // 🔹 helper: evento falso
-  function fakeEvent(): Event {
-    return {
-      preventDefault: jasmine.createSpy('preventDefault')
-    } as unknown as Event;
-  }
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should prevent default submit event', () => {
-    const event = fakeEvent();
-
-    component.register(event);
-
-    expect(event.preventDefault).toHaveBeenCalled();
-  });
-
-  it('should not call service if form is invalid', () => {
-    const event = fakeEvent();
-
-    component.form.reset();
-    component.register(event);
-
-    expect(authService.createUser).not.toHaveBeenCalled();
-  });
-
-  it('should call createUser when form is valid', () => {
-    const event = fakeEvent();
-
+  function fillValidForm() {
     component.form.setValue({
       email: 'test@test.com',
       password: '12345678',
       confirmPassword: '12345678'
     });
+  }
 
-    authService.createUser.and.returnValue(of('ok'));
+  it('should mark all fields as touched if form is invalid', () => {
 
+    spyOn(component.form, 'markAllAsTouched');
+
+    const event = new Event('submit');
     component.register(event);
 
-    expect(authService.createUser).toHaveBeenCalledOnceWith({
+    expect(component.form.markAllAsTouched).toHaveBeenCalled();
+    expect(authServiceSpy.createUser).not.toHaveBeenCalled();
+  });
+
+  it('should call createUser and navigate on success', () => {
+
+    fillValidForm();
+
+    authServiceSpy.createUser.and.returnValue(of({} as any));
+
+    const event = new Event('submit');
+    component.register(event);
+
+    expect(authServiceSpy.createUser).toHaveBeenCalledWith({
       email: 'test@test.com',
       password: '12345678'
     });
-  });
 
-  it('should show snackbar and navigate on success', () => {
-    const event = fakeEvent();
-
-    component.form.setValue({
-      email: 'test@test.com',
-      password: '12345678',
-      confirmPassword: '12345678'
-    });
-
-    authService.createUser.and.returnValue(of('ok'));
-
-    component.register(event);
-
-    expect(snackBar.open).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['/auth/login']);
-  });
-
-  it('should set backend errors on 400 response', () => {
-    const event = fakeEvent();
-
-    component.form.setValue({
-      email: 'bad@test.com',
-      password: '12345678',
-      confirmPassword: '12345678'
-    });
-
-    authService.createUser.and.returnValue(
-      throwError(() => ({
-        status: 400,
-        error: {
-          email: ['Email already exists']
-        }
-      }))
+    expect(alertSpy.success).toHaveBeenCalledWith(
+      'Account created successfully. Please log in.'
     );
 
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/auth/login']);
+  });
+
+  it('should set backend email error on 400', () => {
+
+    fillValidForm();
+
+    const backendError = {
+      status: 400,
+      error: {
+        email: ['Email already exists']
+      }
+    };
+
+    authServiceSpy.createUser.and.returnValue(
+      throwError(() => backendError)
+    );
+
+    const event = new Event('submit');
     component.register(event);
 
-    expect(component.form.get('email')?.errors?.['backend']).toBeDefined();
+    expect(component.form.get('email')?.errors).toEqual({
+      backend: ['Email already exists']
+    });
   });
+
+  it('should set backend password error on 400', () => {
+
+    fillValidForm();
+
+    const backendError = {
+      status: 400,
+      error: {
+        password: ['Password too weak']
+      }
+    };
+
+    authServiceSpy.createUser.and.returnValue(
+      throwError(() => backendError)
+    );
+
+    const event = new Event('submit');
+    component.register(event);
+
+    expect(component.form.get('password')?.errors).toEqual({
+      backend: ['Password too weak']
+    });
+  });
+
+  it('should navigate home on cancel', () => {
+
+    component.cancel();
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
+  });
+
 });

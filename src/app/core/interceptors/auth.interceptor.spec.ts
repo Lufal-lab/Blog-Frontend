@@ -1,90 +1,89 @@
-import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
-import {
-  HttpClientTestingModule,
-  HttpTestingController
-} from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import {
+  HttpRequest,
+  HttpHandler,
+  HttpEvent
+} from '@angular/common/http';
+import { of } from 'rxjs';
 
 import { AuthInterceptor } from './auth.interceptor';
 
 describe('AuthInterceptor', () => {
-  let http: HttpClient;
-  let httpMock: HttpTestingController;
+
+  let interceptor: AuthInterceptor;
+  let httpHandlerSpy: jasmine.SpyObj<HttpHandler>;
 
   beforeEach(() => {
+
+    httpHandlerSpy = jasmine.createSpyObj('HttpHandler', ['handle']);
+
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
-        AuthInterceptor,
-        {
-          provide: HTTP_INTERCEPTORS,
-          useClass: AuthInterceptor,
-          multi: true
-        }
-      ]
+      providers: [AuthInterceptor]
     });
 
-    http = TestBed.inject(HttpClient);
-    httpMock = TestBed.inject(HttpTestingController);
+    interceptor = TestBed.inject(AuthInterceptor);
   });
 
   afterEach(() => {
-    httpMock.verify();
+    // Limpiar cookies después de cada test
+    document.cookie = 'csrftoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   });
 
-  it('should create the interceptor', () => {
-    const interceptor = TestBed.inject(AuthInterceptor);
-    expect(interceptor).toBeTruthy();
+  it('should add X-CSRFToken header for POST when cookie exists', () => {
+
+    document.cookie = 'csrftoken=test-token';
+
+    const request = new HttpRequest('POST', '/test', {});
+
+    httpHandlerSpy.handle.and.returnValue(of({} as HttpEvent<unknown>));
+
+    interceptor.intercept(request, httpHandlerSpy);
+
+    const handledRequest = httpHandlerSpy.handle.calls.mostRecent().args[0];
+
+    expect(handledRequest.headers.get('X-CSRFToken')).toBe('test-token');
+    expect(handledRequest.withCredentials).toBeTrue();
   });
 
-  it('should always send requests with credentials', () => {
-    http.get('/api/test').subscribe();
+  it('should not add X-CSRFToken header if cookie does not exist', () => {
 
-    const req = httpMock.expectOne('/api/test');
-    expect(req.request.withCredentials).toBeTrue();
+    const request = new HttpRequest('POST', '/test', {});
 
-    req.flush({});
+    httpHandlerSpy.handle.and.returnValue(of({} as HttpEvent<unknown>));
+
+    interceptor.intercept(request, httpHandlerSpy);
+
+    const handledRequest = httpHandlerSpy.handle.calls.mostRecent().args[0];
+
+    expect(handledRequest.headers.has('X-CSRFToken')).toBeFalse();
+    expect(handledRequest.withCredentials).toBeTrue();
   });
 
-  it('should add X-CSRFToken header on POST if token exists', () => {
-    spyOnProperty(document, 'cookie', 'get')
-      .and.returnValue('csrftoken=test-token');
+  it('should not add X-CSRFToken header for GET requests', () => {
 
-    http.post('/api/test', {}).subscribe();
+    document.cookie = 'csrftoken=test-token';
 
-    const req = httpMock.expectOne('/api/test');
+    const request = new HttpRequest('GET', '/test');
 
-    expect(req.request.headers.get('X-CSRFToken')).toBe('test-token');
-    expect(req.request.withCredentials).toBeTrue();
+    httpHandlerSpy.handle.and.returnValue(of({} as HttpEvent<unknown>));
 
-    req.flush({});
+    interceptor.intercept(request, httpHandlerSpy);
+
+    const handledRequest = httpHandlerSpy.handle.calls.mostRecent().args[0];
+
+    expect(handledRequest.headers.has('X-CSRFToken')).toBeFalse();
+    expect(handledRequest.withCredentials).toBeTrue();
   });
 
-  it('should NOT add X-CSRFToken header if token does not exist', () => {
-    spyOnProperty(document, 'cookie', 'get')
-      .and.returnValue('');
+  it('should always call next.handle', () => {
 
-    http.post('/api/test', {}).subscribe();
+    const request = new HttpRequest('GET', '/test');
 
-    const req = httpMock.expectOne('/api/test');
+    httpHandlerSpy.handle.and.returnValue(of({} as HttpEvent<unknown>));
 
-    expect(req.request.headers.has('X-CSRFToken')).toBeFalse();
-    expect(req.request.withCredentials).toBeTrue();
+    interceptor.intercept(request, httpHandlerSpy);
 
-    req.flush({});
+    expect(httpHandlerSpy.handle).toHaveBeenCalled();
   });
 
-  it('should not add X-CSRFToken header on GET requests', () => {
-    spyOnProperty(document, 'cookie', 'get')
-      .and.returnValue('csrftoken=test-token');
-
-    http.get('/api/test').subscribe();
-
-    const req = httpMock.expectOne('/api/test');
-
-    expect(req.request.headers.has('X-CSRFToken')).toBeFalse();
-    expect(req.request.withCredentials).toBeTrue();
-
-    req.flush({});
-  });
 });

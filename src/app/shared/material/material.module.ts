@@ -8,11 +8,25 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [],
-  imports: [],
+  imports: [
+    MatInputModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatSnackBarModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatTooltipModule,
+    MatDialogModule,
+    MatSidenavModule,
+    MatSelectModule,
+  ],
   exports: [
     MatInputModule,
     MatButtonModule,
@@ -21,7 +35,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatSnackBarModule,
     MatIconModule,
     MatToolbarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDialogModule,
+    MatSidenavModule,
+    MatSelectModule,
   ]
 })
 export class MaterialModule { }

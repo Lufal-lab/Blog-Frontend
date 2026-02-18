@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Likes</h2>
+
+<mat-dialog-content>
+
+  <div *ngIf="loading">Loading...</div>
+
+  <div *ngFor="let like of likes" class="like-item">
+
+    <div class="like-user">
+      {{ like.user_email }}
+    </div>
+
+    <div class="like-date">
+      {{ like.created_at | date:'dd/MM/yyyy HH:mm:ss' }}
+    </div>
+
+  </div>
+
+  <app-pagination
+    [next]="pagination.next"
+    [previous]="pagination.previous"
+    [pageSize]="15"
+    [totalItems]="totalItems"
+    [currentPage]="currentPage"
+    (nextPage)="loadNext()"
+    (previousPage)="loadPrevious()"
+  ></app-pagination>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>
+    Close
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,7 @@
+<div class="comments-container">
+  <div *ngFor="let comment of comments" class="comment-item">
+    <strong>{{ comment.author_email }}</strong>
+    <small>{{ comment.created_at | date:'short' }}</small>
+    <p class="comment-text">{{ comment.content }}</p>
+  </div>
+</div>

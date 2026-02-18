@@ -1,5 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertService } from './core/services/alert.service';
 
 import { AuthService } from './core/services/auth.service';
 
@@ -10,7 +11,7 @@ import { Post } from './core/models/post.model';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.sass']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent{
   // title = 'blog-frontend-avanzatech';
@@ -19,21 +20,13 @@ export class AppComponent{
   constructor(
     private router: Router,
     private authService: AuthService,
+    private alert: AlertService,
   ) {}
 
-  // ngOnInit() {
-  //   this.postsService.getPosts().subscribe({
-  //     next: response => {
-  //       this.posts = response.results; // según paginación de tu backend
-  //       console.log('Respuesta backend', response);
-  //       this.commentsService.getCommentsByPost(40).subscribe(console.log);
-  //       this.likesService.getLikesByPost(40).subscribe(console.log);
-  //     },
-  //     error: (err) => {
-  //       console.error('Error al conectar con backend', err);
-  //     }
-  //   });
-  // }
+  ngOnInit() {
+    // console.log('AppComponent cargado');
+    // this.alert.error('¡PRUEBA DE ERROR!');
+  }
 
 
 }

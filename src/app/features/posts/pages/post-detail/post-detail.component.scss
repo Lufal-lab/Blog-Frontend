@@ -1,3 +1,21 @@
+.main-content {
+  padding-top: 72px;
+}
+.comment-item {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 8px;
+}
+
+.new-comment {
+  margin-top: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+
 .post-card {
   width: 100%;
   max-width: 1050px;   // 🔥 más ancho
@@ -16,6 +34,8 @@
   justify-content: space-between;  // 🔥 clave
   gap: 1rem;
 }
+
+
 
 .post-title {
   font-size: 1.9rem;
@@ -141,4 +161,13 @@
 .write {
   background: #eaeaea;
   color: #333;
+}
+
+
+.action-btn.liked {
+  font-weight: 700;
+}
+
+.action-btn.liked mat-icon {
+  font-variation-settings: 'FILL' 1;
 }

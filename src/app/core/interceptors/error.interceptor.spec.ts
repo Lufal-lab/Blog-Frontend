@@ -1,14 +1,13 @@
-
 import { TestBed } from '@angular/core/testing';
-import { HTTP_INTERCEPTORS, HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
-import { AlertService } from '../services/alert.service';
-import { ErrorInterceptor } from './error.interceptor';
+import { HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import { of, throwError } from 'rxjs';
 
-describe('HttpErrorInterceptor', () => {
-  let http: HttpClient;
-  let httpMock: HttpTestingController;
+import { ErrorInterceptor } from './error.interceptor';
+import { AlertService } from '../services/alert.service';
+
+describe('ErrorInterceptor', () => {
+  let interceptor: ErrorInterceptor;
   let alertService: jasmine.SpyObj<AlertService>;
   let router: jasmine.SpyObj<Router>;
 
@@ -17,77 +16,139 @@ describe('HttpErrorInterceptor', () => {
     router = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
       providers: [
+        ErrorInterceptor,
         { provide: AlertService, useValue: alertService },
-        { provide: Router, useValue: router },
-        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+        { provide: Router, useValue: router }
       ]
     });
 
-    http = TestBed.inject(HttpClient);
-    httpMock = TestBed.inject(HttpTestingController);
+    interceptor = TestBed.inject(ErrorInterceptor);
   });
 
-  afterEach(() => {
-    httpMock.verify();
+  function createNext(handleReturn: any): HttpHandler {
+    return {
+      handle: jasmine.createSpy('handle').and.returnValue(handleReturn)
+    } as any;
+  }
+
+  it('should alert and throw for network/server down (status 0)', () => {
+    const req = new HttpRequest('GET', '/api/test');
+    const error = new HttpErrorResponse({ status: 0 });
+
+    const next = createNext(throwError(() => error));
+
+    interceptor.intercept(req, next).subscribe({
+      error: err => {
+        expect(err).toBe(error);
+        expect(alertService.error).toHaveBeenCalledWith('Cannot connect to the server. Is the backend running?');
+      }
+    });
   });
 
-  it('should handle 401 Unauthorized', () => {
-    http.get('/test').subscribe({ error: () => {} });
+  it('should pass 401/400 on login without alerts', () => {
+    const req = new HttpRequest('POST' as any, '/api/users/login/');
+    const error = new HttpErrorResponse({ status: 401 });
 
-    const req = httpMock.expectOne('/test');
-    req.flush({}, { status: 401, statusText: 'Unauthorized' });
+    const next = createNext(throwError(() => error));
 
-    expect(alertService.warning).toHaveBeenCalledWith(
-      'Your session has expired. Please log in again.'
-    );
-    expect(router.navigate).toHaveBeenCalledWith(['/auth/login']);
+    interceptor.intercept(req, next).subscribe({
+      error: err => {
+        expect(err).toBe(error);
+        expect(alertService.error).not.toHaveBeenCalled();
+        expect(alertService.warning).not.toHaveBeenCalled();
+        expect(router.navigate).not.toHaveBeenCalled();
+      }
+    });
   });
 
-  it('should handle 403 Forbidden', () => {
-    http.get('/test').subscribe({ error: () => {} });
+  it('should pass 403 on /me without alerts', () => {
+    const req = new HttpRequest('GET', '/api/users/me/');
+    const error = new HttpErrorResponse({ status: 403 });
 
-    const req = httpMock.expectOne('/test');
-    req.flush({}, { status: 403, statusText: 'Forbidden' });
+    const next = createNext(throwError(() => error));
 
-    expect(alertService.error).toHaveBeenCalledWith(
-      'You do not have permission to perform this action.'
-    );
-    expect(router.navigate).toHaveBeenCalledWith(['/forbidden']);
+    interceptor.intercept(req, next).subscribe({
+      error: err => {
+        expect(err).toBe(error);
+        expect(alertService.error).not.toHaveBeenCalled();
+        expect(alertService.warning).not.toHaveBeenCalled();
+      }
+    });
   });
 
-  it('should handle 500 Internal Server Error', () => {
-    http.get('/test').subscribe({ error: () => {} });
+  it('should alert and navigate on 401 general', () => {
+    const req = new HttpRequest('GET', '/api/test');
+    const error = new HttpErrorResponse({ status: 401 });
 
-    const req = httpMock.expectOne('/test');
-    req.flush({}, { status: 500, statusText: 'Internal Server Error' });
+    const next = createNext(throwError(() => error));
 
-    expect(alertService.error).toHaveBeenCalledWith(
-      'Internal server error. Please try again later.'
-    );
+    interceptor.intercept(req, next).subscribe({
+      error: err => {
+        expect(err).toBe(error);
+        expect(alertService.warning).toHaveBeenCalledWith('Session expired. Please login again.');
+        expect(router.navigate).toHaveBeenCalledWith(['/auth/login']);
+      }
+    });
   });
 
-  it('should rethrow the error', () => {
-    let caughtError: HttpErrorResponse | undefined;
+  it('should alert on 403 general', () => {
+    const req = new HttpRequest('GET', '/api/test');
+    const error = new HttpErrorResponse({ status: 403 });
 
-    http.get('/test').subscribe({ error: (err) => (caughtError = err) });
+    const next = createNext(throwError(() => error));
 
-    const req = httpMock.expectOne('/test');
-    req.flush({}, { status: 500, statusText: 'Internal Server Error' });
-
-    expect(caughtError).toBeTruthy();
-    expect(caughtError!.status).toBe(500);
+    interceptor.intercept(req, next).subscribe({
+      error: err => {
+        expect(err).toBe(error);
+        expect(alertService.error).toHaveBeenCalledWith('You do not have permission.');
+      }
+    });
   });
 
-  it('should handle network error (status 0)', () => {
-    http.get('/test').subscribe({ error: () => {} });
+  it('should alert on 500', () => {
+    const req = new HttpRequest('GET', '/api/test');
+    const error = new HttpErrorResponse({ status: 500 });
 
-    const req = httpMock.expectOne('/test');
-    req.error(new ProgressEvent('error'));
+    const next = createNext(throwError(() => error));
 
-    expect(alertService.error).toHaveBeenCalledWith(
-      'Cannot connect to the server. Please try again later.'
-    );
+    interceptor.intercept(req, next).subscribe({
+      error: err => {
+        expect(err).toBe(error);
+        expect(alertService.error).toHaveBeenCalledWith('Internal server error.');
+      }
+    });
   });
+
+  it('should alert on 504', () => {
+    const req = new HttpRequest('GET', '/api/test');
+    const error = new HttpErrorResponse({ status: 504 });
+
+    const next = createNext(throwError(() => error));
+
+    interceptor.intercept(req, next).subscribe({
+      error: err => {
+        expect(err).toBe(error);
+        expect(alertService.error).toHaveBeenCalledWith('Cannot connect to the server. Is the backend running?');
+      }
+    });
+  });
+
+  it('should alert with backend message for other errors', () => {
+    const req = new HttpRequest('GET', '/api/test');
+    const error = new HttpErrorResponse({
+      status: 400,
+      error: { message: 'Invalid input' }
+    });
+
+    const next = createNext(throwError(() => error));
+
+    interceptor.intercept(req, next).subscribe({
+      error: err => {
+        expect(err).toBe(error);
+        expect(alertService.error).toHaveBeenCalledWith('Invalid input');
+      }
+    });
+  });
+
 });

@@ -48,6 +48,21 @@
         </mat-form-field>
 
         <div class="actions">
+  <button mat-flat-button type="submit" [disabled]="form.invalid">
+    Log In
+  </button>
+
+  <button mat-button type="button" (click)="cancel()">
+    Cancel
+  </button>
+</div>
+
+<p class="login-link">
+  Don't have an account?
+  <a routerLink="/auth/register">Register</a>
+</p>
+
+        <!-- <div class="actions">
           <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
             Submit
           </button>
@@ -60,7 +75,7 @@
         <p class="login-link">
           Don't have an account?
           <a mat-button color="accent" routerLink="/auth/register">Register</a>
-        </p>
+        </p> -->
 
       </form>
     </mat-card>

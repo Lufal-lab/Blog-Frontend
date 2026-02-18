@@ -5,6 +5,8 @@ export interface User {
   email: string;
   team: string;
   // team: Team;
+  is_superuser: boolean;
+  is_staff: boolean;
 }
 
 

@@ -1,0 +1,66 @@
+<mat-card *ngIf="post">
+  <div class="header-row">
+    <div class="title-section">
+      <h2 class="post-title">
+        {{ post.title }}
+      </h2>
+
+    </div>
+
+    <div class="header-meta">
+
+      <span class="team-badge">
+        Team {{ post.author_team }}
+      </span>
+
+      <span class="author-name">
+        {{ post.author_email }}
+      </span>
+
+      <span class="meta-info">
+        {{ post.created_at | date:'medium' }}
+      </span>
+
+    </div>
+
+  </div>
+
+  <!-- EXCERPT -->
+  <div class="post-excerpt">
+    <p>
+      {{ post.content }}
+    </p>
+  </div>
+
+  <div>
+    <p>
+      {{ post.likes_count }} Likes
+    </p>
+  </div>
+
+</mat-card>
+
+<mat-card>
+  <mat-card-title>Comments ({{ totalComments }})</mat-card-title>
+
+  <div *ngIf="loadingComments">Loading comments...</div>
+  <div *ngIf="error">{{ error }}</div>
+
+  <app-comment-card [comments]="comments"></app-comment-card>
+
+  <app-pagination
+    [next]="pagination.next"
+    [previous]="pagination.previous"
+    [pageSize]="pageSize"
+    [totalItems]="totalComments"
+    [currentPage]="currentPage"
+    (nextPage)="loadNextComments()"
+    (previousPage)="loadPreviousComments()"
+  ></app-pagination>
+
+  <div *ngIf="isLoggedIn$ | async" class="new-comment">
+    <app-comment-form (onSubmit)="handleCommentSubmit($event)"></app-comment-form>
+  </div>
+</mat-card>
+
+<button mat-stroked-button (click)="goBack()">Back</button>

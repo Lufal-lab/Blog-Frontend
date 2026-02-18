@@ -27,7 +27,7 @@ export class PostsService {
     );
   }
 
-  getPostById(id: number): Observable<Post> {
+  getPostById(id: number | string): Observable<Post> {
     return this.http.get<Post>(`${this.apiUrl}${id}/`)
     .pipe(
       catchError(this.handleError)
@@ -42,32 +42,16 @@ export class PostsService {
     return this.http.post<Post>(this.apiUrl, post);
   }
 
-  updatePost(id: number, post: UpdatePostDTO): Observable<Post> {
+  updatePost(id: number | string, post: UpdatePostDTO): Observable<Post> {
     return this.http.patch<Post>(`${this.apiUrl}${id}/`, post);
   }
 
-  dedetePost(id: number): Observable<void> {
+  deletePost(id: number | string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}${id}/`);
   }
 
   private handleError(error: HttpErrorResponse) {
-    console.log('Error in PostService: ', error);
     return throwError(() => error);
   }
 
-  // createPost(post: PostCreate): Observable<Post> {
-  //   return this.http.post<Post>('/api/posts/', post);
-  // }
-
-  // updatePost(id: number, post: PostUpdate): Observable<Post> {
-  //   return this.http.put<Post>(`/api/posts/${id}/`, post);
-  // }
-
-  // partialUpdatePost(id: number, post: Partial<PostUpdate>): Observable<Post> {
-  //   return this.http.patch<Post>(`/api/posts/${id}/`, post);
-  // }
-
-  // deletePost(id: number): Observable<void> {
-  //   return this.http.delete<void>(`/api/posts/${id}/`);
-  // }
 }

@@ -1,0 +1,7 @@
+<div class="comment-form">
+  <textarea [(ngModel)]="content" placeholder="Escribe un comentario..."></textarea>
+    <div class="actions">
+      <button type="button" (click)="cancel()">Cancel</button>
+      <button type="button" (click)="submit()" [disabled]="!content.trim()">Submit</button>
+    </div>
+</div>

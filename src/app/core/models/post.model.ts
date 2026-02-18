@@ -8,8 +8,9 @@ export interface Post {
   title: string;
   content: string;
   excerpt: string;
-  likes_count: string;
-  comments_count: string;
+  likes_count: number;
+  comments_count: number;
+  is_liked: boolean;
   created_at: string;
   updated_at: string;
   privacy_read: PrivacyLevel;

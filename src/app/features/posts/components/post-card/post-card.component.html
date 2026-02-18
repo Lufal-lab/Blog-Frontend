@@ -3,9 +3,30 @@
   <!-- HEADER -->
 <div class="header-row">
 
-  <h2 class="post-title">
-    {{ post.title }}
-  </h2>
+  <div class="title-section">
+
+    <h2 class="post-title">
+      {{ post.title }}
+    </h2>
+
+    <div class="title-actions" *ngIf="isLoggedIn$ | async">
+      <button *ngIf="canEdit"
+        mat-icon-button
+        class="action-btn"
+        (click)="editPost()">
+        <mat-icon>edit</mat-icon>
+      </button>
+
+      <button *ngIf="canEdit"
+        mat-icon-button
+        class="action-btn"
+        (click)="deletePost()">
+        <mat-icon>delete</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
 
   <div class="header-meta">
 
@@ -28,7 +49,7 @@
   <!-- EXCERPT -->
   <div class="post-excerpt">
     <p>
-      {{ post.content | slice:0:250 }}
+      {{ post.excerpt | slice:0:250 }}
       <ng-container *ngIf="post.content.length > 250">
         ...
         <a class="show-more" (click)="openPost()">Show more</a>
@@ -46,22 +67,22 @@
         {{ post.likes_count }} Likes
       </span>
 
-      <span class="clickable" (click)="goToComments()">
+      <span class="clickable" (click)="openPost()">
         {{ post.comments_count }} Comments
       </span>
     </div>
 
     <!-- Right side: buttons -->
-    <div class="buttons">
+    <div class="buttons" *ngIf="isLoggedIn$ | async">
 
       <button
         mat-icon-button
         class="action-btn"
-        (click)="likePost()">
+        [class.liked]="post.is_liked"
+        (click)="toggleLike()">
 
         <mat-icon>
-          favorite_border
-          <!-- {{ post.likedByUser ? 'favorite' : 'favorite_border' }} -->
+          {{ post.is_liked ? 'favorite' : 'favorite_border' }}
         </mat-icon>
 
       </button>
@@ -69,23 +90,10 @@
       <button
         mat-icon-button
         class="action-btn"
-        (click)="goToComments()">
+        (click)="openPost()">
         <mat-icon>chat_bubble_outline</mat-icon>
       </button>
 
-      <button
-        mat-icon-button
-        class="action-btn"
-        (click)="editPost()">
-        <mat-icon>edit</mat-icon>
-      </button>
-
-      <button
-        mat-icon-button
-        class="action-btn"
-        (click)="deletePost()">
-        <mat-icon>delete</mat-icon>
-      </button>
 
     </div>
 

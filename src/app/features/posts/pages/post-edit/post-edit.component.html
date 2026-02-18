@@ -1,0 +1,7 @@
+<h2>Edit Post</h2>
+
+<app-post-form
+  *ngIf="post"
+  [initialData]="post"
+  (submitForm)="updatePost($event)">
+</app-post-form>

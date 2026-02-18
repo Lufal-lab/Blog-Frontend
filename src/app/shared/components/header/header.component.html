@@ -17,23 +17,53 @@
   </div> -->
 <!-- </nav> -->
 
-<mat-toolbar class="app-toolbar" color="transparent">
+<!-- <mat-toolbar class="app-toolbar" color="transparent">
   <span class="logo">My Blog</span>
 
-  <span class="spacer"></span>
+  <span class="spacer"></span> -->
 
   <!-- Usuario no autenticado -->
-  <ng-container *ngIf="!(isLoggedIn$ | async); else logged">
+  <!-- <ng-container *ngIf="!(isLoggedIn$ | async); else logged">
     <a mat-button routerLink="/auth/login">Login</a>
     <a mat-button routerLink="/auth/register">Register</a>
-  </ng-container>
+  </ng-container> -->
 
   <!-- Usuario autenticado -->
-  <ng-template #logged>
+  <!-- <ng-template #logged>
     <span class="user-email">Welcome, {{ (userEmail$ | async)?.email }}</span>
     <button mat-icon-button (click)="logout()" aria-label="Logout">
       <mat-icon>logout</mat-icon>
     </button>
   </ng-template>
 </mat-toolbar>
+-->
 
+
+<mat-sidenav-container class="app-container">
+
+  <!-- Toolbar fijo arriba -->
+  <mat-toolbar class="app-toolbar" color="primary">
+    <span class="logo">My Blog</span>
+    <span class="spacer"></span>
+
+    <!-- Usuario no autenticado -->
+    <ng-container *ngIf="!(isLoggedIn$ | async); else logged">
+      <a mat-button routerLink="/auth/login">Login</a>
+      <a mat-button routerLink="/auth/register">Register</a>
+    </ng-container>
+
+    <!-- Usuario autenticado -->
+    <ng-template #logged>
+      <span class="user-email">Welcome, {{ (userEmail$ | async)?.email }}</span>
+      <button mat-icon-button (click)="logout()" aria-label="Logout">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </ng-template>
+  </mat-toolbar>
+
+  <!-- Contenido principal -->
+  <!-- <mat-sidenav-content class="main-content">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content> -->
+
+</mat-sidenav-container>

@@ -1,14 +1,20 @@
-<div>
-  <button
+<div class="pagination-container">
+  <button mat-button
     (click)="previousPage.emit()"
     [disabled]="!previous"
+    class="pagination-btn"
     >
     Anterior
   </button>
 
-  <button
+  <span class="pagination-info">
+    {{ startItem }} - {{ endItem }} of {{ totalItems }}
+  </span>
+
+  <button mat-button
   (click)="nextPage.emit()"
   [disabled]="!next"
+  class="pagination-btn"
   >
     Siguiente
   </button>

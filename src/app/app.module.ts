@@ -20,6 +20,8 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { SharedModule } from './shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,6 +46,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
       multi: true
     }
   ],

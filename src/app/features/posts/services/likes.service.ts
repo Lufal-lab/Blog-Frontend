@@ -28,6 +28,15 @@ export class LikesService {
     return this.http.get<Paginated<Like>>(url);
   }
 
+  addLike(postId: number){
+    return this.http.post(`/api/posts/${postId}/likes/`, {});
+  }
+
+  removeLike(postId: number){
+    return this.http.delete(`/api/posts/${postId}/likes/unlike/`);
+
+  }
+
   private handleError(error: HttpErrorResponse) {
     console.error('Error en LikesService', error);
     return throwError(() => error);

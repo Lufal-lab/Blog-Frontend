@@ -27,7 +27,7 @@ describe('HeaderComponent', () => {
 
     authServiceMock.authStatus.and.returnValue(of(false));
     authServiceMock.currentUser.and.returnValue(of(null));
-    authServiceMock.logout.and.returnValue(of({}));
+    authServiceMock.logout.and.returnValue(of(void 0));
 
     await TestBed.configureTestingModule({
       declarations: [HeaderComponent],

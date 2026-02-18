@@ -8,7 +8,7 @@ export class AlertService {
 
   constructor(private snackBar: MatSnackBar) {}
 
-  private show(message: string, type: 'success' | 'error' | 'info' | 'warning', duration = 3000) {
+  private show(message: string, type: 'success' | 'error' | 'info' | 'warning', duration = 4000) {
     const config: MatSnackBarConfig = {
       duration,
       horizontalPosition: 'center',
