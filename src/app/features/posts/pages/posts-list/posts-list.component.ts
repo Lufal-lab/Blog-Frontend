@@ -31,7 +31,7 @@ export class PostsComponent implements OnInit {
 
   totalItems: number = 0;      // total de posts (count del backend)
   currentPage: number = 1;     // página actual
-  pageSize: number = 10
+  pageSize: number = 10;
 
   constructor(
     private postsService: PostsService,
@@ -104,8 +104,11 @@ export class PostsComponent implements OnInit {
    */
   private setPostsResponse(response: Paginated<Post>): void {
     this.posts = response.results;
-    this.pagination.next = response.next ? response.next.replace('http://127.0.0.1:8000', '') : null;
-    this.pagination.previous = response.previous ? response.previous.replace('http://127.0.0.1:8000', '') : null;
+
+    // this.pagination.next = response.next ? response.next.replace('http://127.0.0.1:8000', '') : null;
+    // this.pagination.previous = response.previous ? response.previous.replace('http://127.0.0.1:8000', '') : null;
+    this.pagination.next = this.extractRelativePath(response.next);
+    this.pagination.previous = this.extractRelativePath(response.previous);
 
     // Total items
     this.totalItems = response.count;
@@ -116,13 +119,23 @@ export class PostsComponent implements OnInit {
     } else {
       const params = new URLSearchParams(response.previous.split('?')[1]);
       const page = params.get('page');
-      this.currentPage = page ? Number(page) + 1 : 1;
+      this.currentPage = page ? Number(page) + 1 : 2;
     }
 
     this.loading = false;
   }
 
-  onPostDeleted(postId: number): void {
+  private extractRelativePath(fullUrl: string | null): string | null {
+    if (!fullUrl) return null;
+    try {
+      const url = new URL(fullUrl);
+      return url.pathname + url.search; // Esto devuelve solo "/api/posts/?page=2"
+    } catch {
+      return fullUrl;
+    }
+  }
+
+  onPostDeleted(postId: number | string): void {
     this.posts = this.posts.filter(post => post.id !== postId )
   }
 

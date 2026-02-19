@@ -124,17 +124,46 @@ export class PostDetailComponent implements OnInit {
     this.loadingComments = false;
   }
 
+  // handleCommentSubmit(content: string): void {
+  //   // Usamos el 'content' que viene del componente hijo
+  //   this.commentsService.createComment(this.postId, content).subscribe({
+  //     next: () => {
+  //       this.loadComments(); // Recarga la lista para ver el nuevo
+  //     },
+  //     error: () => {
+  //       this.error = 'Could not submit comment';
+  //     }
+  //   });
+  // }
+
   handleCommentSubmit(content: string): void {
-    // Usamos el 'content' que viene del componente hijo
     this.commentsService.createComment(this.postId, content).subscribe({
       next: () => {
-        this.loadComments(); // Recarga la lista para ver el nuevo
-      },
-      error: () => {
-        this.error = 'Could not submit comment';
+        // 1. Primero cargamos para saber cuántos comentarios hay en total ahora
+        this.commentsService.getCommentsByPost(this.postId).subscribe(res => {
+
+          // 2. TRUCO: Calculamos la última página de forma simple
+          // Si tienes 11 comentarios y el tamaño es 5, la última es la 3.
+          this.currentPage = Math.ceil(res.count / this.pageSize);
+
+          // 3. Cargamos los comentarios de esa página específica
+          this.loadCommentsByPage(this.currentPage);
+        });
       }
     });
   }
+
+// Un mini método para cargar una página específica
+loadCommentsByPage(page: number): void {
+  // Aquí usas la URL de tu API pasándole el número de página
+  const url = `/api/posts/${this.postId}/comments/?page=${page}`;
+
+  this.commentsService.getByUrl(url).subscribe(res => {
+    this.setCommentsResponse(res);
+    // Bajamos un poquito para que el usuario vea su mensaje
+    setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 300);
+  });
+}
 
   loadLikes(): void {
     this.likesService.getLikesByPost(this.postId).subscribe({

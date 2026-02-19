@@ -35,4 +35,8 @@ export class PostEditComponent implements OnInit {
       }
     });
   }
+
+  goBack(): void {
+    this.router.navigate(['/posts']);
+  }
 }

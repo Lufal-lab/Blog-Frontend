@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+
 import { PrivacyLevel } from 'src/app/core/models/privacy-level.enum';
+
 
 export type PermissionOption = 'none' | 'read_only' | 'read_write';
 type PermissionKeys = 'public' | 'authenticated' | 'team' | 'author';
@@ -33,7 +36,11 @@ export class PostFormComponent implements OnInit {
     )
   });
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+
+  ) {}
 
   ngOnInit(): void {
     if (this.initialData) {
@@ -168,4 +175,6 @@ export class PostFormComponent implements OnInit {
 
     this.submitForm.emit(this.buildPayload());
   }
+
+
 }

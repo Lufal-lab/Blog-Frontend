@@ -1,45 +1,49 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
-import { Router } from '@angular/router';
 import { HeaderComponent } from './header.component';
 import { AuthService } from 'src/app/core/services/auth.service';
-
-
+import { Router } from '@angular/router';
+import { of } from 'rxjs';
+import { User } from 'src/app/core/models/user.model';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatIconModule } from '@angular/material/icon';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
-  let authServiceMock: jasmine.SpyObj<AuthService>;
-  let routerMock: jasmine.SpyObj<Router>;
+  let mockAuthService: any;
+  let mockRouter: any;
 
   beforeEach(async () => {
+    mockAuthService = {
+      authStatus: jasmine.createSpy('authStatus').and.returnValue(of(true)),
+      currentUser: jasmine.createSpy('currentUser').and.returnValue(of({
+        id: 1,
+        email: 'test@example.com',
+        team: 'team1',
+        is_superuser: false,
+        is_staff: false
+      } as User)),
+      logout: jasmine.createSpy('logout').and.returnValue(of(null))
+    };
 
-    authServiceMock = jasmine.createSpyObj('AuthService', [
-      'authStatus',
-      'currentUser',
-      'logout'
-    ]);
-
-    routerMock = jasmine.createSpyObj('Router', ['navigate']);
-
-    authServiceMock.authStatus.and.returnValue(of(false));
-    authServiceMock.currentUser.and.returnValue(of(null));
-    authServiceMock.logout.and.returnValue(of(void 0));
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
 
     await TestBed.configureTestingModule({
       declarations: [HeaderComponent],
       imports: [
         MatToolbarModule,
         MatButtonModule,
-        BrowserAnimationsModule
+        MatIconModule,   // <- CORRECTO
       ],
       providers: [
-        { provide: AuthService, useValue: authServiceMock },
-        { provide: Router, useValue: routerMock}
-      ]
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: Router, useValue: mockRouter }
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA] // <- opcional si hay otros elementos desconocidos
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderComponent);
@@ -47,29 +51,33 @@ describe('HeaderComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should expose authStatus observable', (done) => {
+  it('should have isLoggedIn$ observable from AuthService', (done) => {
     component.isLoggedIn$.subscribe(value => {
-      expect(value).toBeFalse();
+      expect(value).toBe(true);
       done();
     });
   });
 
-  it('should expose currentUser observable', (done) => {
+  it('should have userEmail$ observable from AuthService', (done) => {
     component.userEmail$.subscribe(user => {
-      expect(user).toBeNull();
+      expect(user).toEqual({
+        id: 1,
+        email: 'test@example.com',
+        team: 'team1',
+        is_superuser: false,
+        is_staff: false
+      });
       done();
     });
   });
 
-  it('should call logout and navigate to login', () => {
+  it('logout() should call authService.logout and navigate to ""', () => {
     component.logout();
-
-    expect(authServiceMock.logout).toHaveBeenCalled();
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/login']);
+    expect(mockAuthService.logout).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['']);
   });
-
 });

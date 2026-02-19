@@ -1,30 +1,129 @@
-.post-form {
-  max-width: 700px;
-}
-
-.full-width {
+.post-card {
   width: 100%;
+  max-width: 1050px;   // 🔥 más ancho
+  margin: 2rem auto;
+  padding: 2rem;       // 🔥 espacio interno real
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-.section-title {
-  margin-top: 24px;
-  margin-bottom: 12px;
-}
+/* HEADER */
 
-.permissions-header {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.permission-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.header-row {
+  display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  justify-content: space-between;  // 🔥 clave
+  gap: 1rem;
 }
 
-.buttons {
-  margin-top: 24px;
+
+
+.post-title {
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin: 0;
+  color: #111;
+}
+
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.team-badge {
+  background: #eeeeee;
+  color: #444;
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  border-radius: 14px;
+  font-weight: 500;
+}
+
+.author-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.meta-info {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+
+/* EXCERPT */
+
+.post-excerpt {
+  margin-top: 1.3rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #333;
+}
+
+/* EL CUADRO DE CONTENIDO (Sencillo) */
+.post-content-box {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid #f1f1f1; // Línea muy suave
+  border-radius: 12px;
+  background-color: #fafafa;
+
+  p {
+    font-size: 1.05rem; // Tu tamaño de excerpt
+    line-height: 1.7;
+    color: #333;
+    margin: 0;
+  }
+}
+
+/* LIKES CENTRADOS (Sin exagerar) */
+.likes-summary {
+  display: flex;            /* Esto es lo que permite alinear hijos */
+  justify-content: center;   /* Centra horizontalmente */
+  margin: 1rem 0;
+  font-weight: 600;
+}
+
+/* SECCIÓN COMENTARIOS */
+.section-title {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.back-btn {
+  margin-bottom: 1rem;
+  text-transform: none;
+}
+
+.form-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #111;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  align-items: center;
+}
+
+button {
+  border-radius: 10px;
+  padding: 0.6rem 1.5rem;
+}
+.back-container {
+  display: flex;
+  justify-content: flex-start;
 }

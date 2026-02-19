@@ -22,4 +22,8 @@ export class PostCreateComponent {
       }
     });
   }
+
+  goBack(): void {
+    this.router.navigate(['/posts']);
+  }
 }

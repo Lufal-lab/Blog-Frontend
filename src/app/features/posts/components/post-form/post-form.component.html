@@ -1,110 +1,133 @@
-<!-- <form [formGroup]="form" (ngSubmit)="onSubmit()">
+<mat-card class="post-card">
 
-  <mat-form-field appearance="outline" class="w-full">
-    <mat-label>Title</mat-label>
-    <input matInput formControlName="title" />
-    <mat-error *ngIf="form.get('title')?.invalid">
-      Title is required
-    </mat-error>
-  </mat-form-field>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="post-form">
 
-  <mat-form-field appearance="outline" class="w-full">
-    <mat-label>Content</mat-label>
-    <textarea matInput rows="6" formControlName="content"></textarea>
-    <mat-error *ngIf="form.get('content')?.invalid">
-      Content is required
-    </mat-error>
-  </mat-form-field>
+    <!-- TITLE -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" />
+      <mat-error *ngIf="form.get('title')?.invalid">
+        Title is required
+      </mat-error>
+    </mat-form-field>
 
-  <h3>Permissions</h3>
+    <!-- CONTENT -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Content</mat-label>
+      <textarea matInput rows="6" formControlName="content"></textarea>
+      <mat-error *ngIf="form.get('content')?.invalid">
+        Content is required
+      </mat-error>
+    </mat-form-field>
 
-  <div *ngFor="let level of ['public','authenticated','team','author']">
+    <h3 class="section-title">Permissions</h3>
+
+    <!-- HEADER -->
+    <div class="permissions-header">
+      <span>Category</span>
+      <span>Access</span>
+    </div>
+
+    <!-- ROWS -->
+    <div class="permission-row">
+      <span>Public</span>
+      <mat-select formControlName="public">
+        <mat-option value="none">None</mat-option>
+        <mat-option value="read_only">Read Only</mat-option>
+      </mat-select>
+    </div>
 
     <div class="permission-row">
-      <span>{{ level | titlecase }}</span>
-
-      <mat-select [formControlName]="level">
+      <span>Authenticated</span>
+      <mat-select formControlName="authenticated">
         <mat-option value="none">None</mat-option>
         <mat-option value="read_only">Read Only</mat-option>
         <mat-option value="read_write">Read & Write</mat-option>
       </mat-select>
     </div>
 
-  </div>
+    <div class="permission-row">
+      <span>Team</span>
+      <mat-select formControlName="team">
+        <mat-option value="none">None</mat-option>
+        <mat-option value="read_only">Read Only</mat-option>
+        <mat-option value="read_write">Read & Write</mat-option>
+      </mat-select>
+    </div>
 
-  <div class="buttons">
-    <button mat-raised-button color="primary" type="submit">
-      Save
+    <div class="permission-row">
+      <span>Owner</span>
+      <mat-select formControlName="author">
+        <mat-option value="read_write">Read & Write</mat-option>
+      </mat-select>
+    </div>
+
+    <div class="buttons">
+      <button mat-raised-button color="primary" type="submit">
+        Save
+      </button>
+    </div>
+
+  </form>
+
+
+</mat-card>
+
+
+<!-- <mat-card class="post-card">
+  <div class="back-container">
+    <button mat-stroked-button type="button" class="back-btn" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Back
     </button>
+</div>
+  <div class="header-row">
+    <div class="title-section">
+      <h2 class="post-title">{{ post.title }}</h2>
+    </div>
+
+    <div class="header-meta">
+      <span class="team-badge">Team {{ post.author_team }}</span>
+      <span class="author-name">{{ post.author_email }}</span>
+      <span class="meta-info">{{ post.created_at | date:'medium' }}</span>
+    </div>
   </div>
 
-</form> -->
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="post-form">
-
-  <!-- TITLE -->
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Title</mat-label>
-    <input matInput formControlName="title" />
-    <mat-error *ngIf="form.get('title')?.invalid">
-      Title is required
-    </mat-error>
-  </mat-form-field>
-
-  <!-- CONTENT -->
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Content</mat-label>
-    <textarea matInput rows="6" formControlName="content"></textarea>
-    <mat-error *ngIf="form.get('content')?.invalid">
-      Content is required
-    </mat-error>
-  </mat-form-field>
-
-  <h3 class="section-title">Permissions</h3>
-
-  <!-- HEADER -->
-  <div class="permissions-header">
-    <span>Category</span>
-    <span>Access</span>
+  <div class="post-content-box">
+    <p>{{ post.content }}</p>
   </div>
 
-  <!-- ROWS -->
-  <div class="permission-row">
-    <span>Public</span>
-    <mat-select formControlName="public">
-      <mat-option value="none">None</mat-option>
-      <mat-option value="read_only">Read Only</mat-option>
-    </mat-select>
+  <div class="likes-summary">
+      <span>{{ post.likes_count }} LIKES</span>
   </div>
 
-  <div class="permission-row">
-    <span>Authenticated</span>
-    <mat-select formControlName="authenticated">
-      <mat-option value="none">None</mat-option>
-      <mat-option value="read_only">Read Only</mat-option>
-      <mat-option value="read_write">Read & Write</mat-option>
-    </mat-select>
+
+  <div class="comments-section">
+    <h3 class="section-title">Comments</h3>
+
+    <div *ngIf="loadingComments" class="text-center">Loading comments...</div>
+
+    <app-comment-card
+    *ngFor="let comment of comments"
+    [comment]="comment">
+    </app-comment-card>
+
+
+    <app-pagination
+      [next]="pagination.next"
+      [previous]="pagination.previous"
+      [pageSize]="pageSize"
+      [totalItems]="totalComments"
+      [currentPage]="currentPage"
+      (nextPage)="loadNextComments()"
+      (previousPage)="loadPreviousComments()"
+    ></app-pagination>
+
+    <div *ngIf="isLoggedIn$ | async" class="new-comment-box">
+      <h4 class="form-title">Add New Comment:</h4>
+      <app-comment-form (onSubmit)="handleCommentSubmit($event)"></app-comment-form>
+    </div>
   </div>
 
-  <div class="permission-row">
-    <span>Team</span>
-    <mat-select formControlName="team">
-      <mat-option value="none">None</mat-option>
-      <mat-option value="read_only">Read Only</mat-option>
-      <mat-option value="read_write">Read & Write</mat-option>
-    </mat-select>
-  </div>
 
-  <div class="permission-row">
-    <span>Owner</span>
-    <mat-select formControlName="author">
-      <mat-option value="read_write">Read & Write</mat-option>
-    </mat-select>
-  </div>
-
-  <div class="buttons">
-    <button mat-raised-button color="primary" type="submit">
-      Save
-    </button>
-  </div>
-
-</form>
+</mat-card> -->

@@ -1,11 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { MainLayoutComponent } from './main-layout/main-layout.component';
+import { SharedModule } from '../shared/shared.module';
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    MainLayoutComponent,
+  ],
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule,
+    SharedModule,
+  ],
+  exports: [
+    MainLayoutComponent,
   ]
 })
 export class LayoutModule { }

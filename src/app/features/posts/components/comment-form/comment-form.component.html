@@ -1,7 +1,15 @@
 <div class="comment-form">
-  <textarea [(ngModel)]="content" placeholder="Escribe un comentario..."></textarea>
-    <div class="actions">
-      <button type="button" (click)="cancel()">Cancel</button>
-      <button type="button" (click)="submit()" [disabled]="!content.trim()">Submit</button>
-    </div>
+  <!-- <textarea [(ngModel)]="content" placeholder="New Comment"></textarea> -->
+  <mat-form-field appearance="outline" class="comment-field">
+    <mat-label>Write a comment</mat-label>
+    <textarea matInput rows="4" [(ngModel)]="content"></textarea>
+  </mat-form-field>
+  <div class="actions">
+    <button mat-stroked-button type="button" (click)="submit()" [disabled]="!content.trim()">
+      Submit
+    </button>
+    <button mat-stroked-button type="button" (click)="cancel()">
+      Cancel
+    </button>
+  </div>
 </div>

@@ -1,0 +1,74 @@
+// /* HEADER */
+
+// .header-row {
+//   padding: 10px 24px 0px 24px;;
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;  // 🔥 clave
+//   // gap: 1rem;
+// }
+
+// .post-title {
+//   font-size: 1rem;
+//   font-weight: 700;
+//   margin: 10;
+//   color: #111;
+// }
+
+// .header-meta {
+//   display: flex;
+//   align-items: center;
+//   // gap: 1rem;
+// }
+
+// .meta-info {
+//   font-size:1rem;
+//   color: #777;
+// }
+
+
+// /* EL CUADRO DE CONTENIDO (Sencillo) */
+// .post-content-box {
+//   // margin-top: 1.5rem;
+//   padding: 0.5rem 24;
+//   border: 1px solid #f1f1f1; // Línea muy suave
+//   border-radius: 12px;
+//   background-color: #fafafa;
+
+//   p {
+//     font-size: 1rem; // Tu tamaño de excerpt
+//     line-height: 1.7;
+//     color: #333;
+//     margin: 0;
+//   }
+// }
+
+
+.comment-item {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between; /* separa izquierda y derecha */
+  align-items: center;
+}
+
+.post-title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.meta-info {
+  font-size: 0.875rem;
+  color: gray;
+}
+
+.post-content-box {
+  margin-top: 0.5rem;
+}
+
+.comment-text {
+  margin: 0;
+}

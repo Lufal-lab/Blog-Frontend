@@ -30,7 +30,7 @@ export class LikesComponent implements OnInit {
   error: string | null = null;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { postId: number },
+    @Inject(MAT_DIALOG_DATA) public data: { postId: number | string },
     private likesService: LikesService
   ) {}
 
@@ -88,14 +88,17 @@ export class LikesComponent implements OnInit {
   }
 
   private setLikesResponse(response: Paginated<Like>): void {
-    console.log('Respuesta de Likes API:', response); // <- Esto nos dice qué devuelve realmente
-
     this.likes = response.results;
-    this.pagination.next = response.next ? response.next.replace('http://127.0.0.1:8000', '') : null;
-    this.pagination.previous = response.previous ? response.previous.replace('http://127.0.0.1:8000', '') : null;
+
+    // Mejor usar una función de limpieza o URL real para evitar que falle fuera de local
+    this.pagination.next = response.next ? response.next.split('/api')[1] : null;
+    this.pagination.previous = response.previous ? response.previous.split('/api')[1] : null;
+
+    // Si la URL limpia queda como "/posts/1/likes/?page=2", agrégale el /api inicial
+    if(this.pagination.next) this.pagination.next = '/api' + this.pagination.next;
+    if(this.pagination.previous) this.pagination.previous = '/api' + this.pagination.previous;
 
     this.totalItems = response.count;
-    this.pageSize = 15;
     this.loading = false;
   }
 

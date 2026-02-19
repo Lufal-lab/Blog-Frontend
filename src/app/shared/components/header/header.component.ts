@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
-
+import { User } from 'src/app/core/models/user.model';
 
 @Component({
   selector: 'app-header',
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent {
   isLoggedIn$: Observable<boolean>;
-  userEmail$: Observable<{ email: string } | null>;
+  userEmail$: Observable<User | null>;
 
   constructor(
     private authService: AuthService,
@@ -24,7 +24,7 @@ export class HeaderComponent {
   logout(){
     this.authService.logout().subscribe(() => {
       this.router.navigate(['']);
-    });
+    },);
   }
 
 }

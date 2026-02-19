@@ -20,7 +20,7 @@ import { PostsService } from '../../services/posts.service';
 export class PostCardComponent{
 
   @Input() post!: Post;
-  @Output() postDeleted = new EventEmitter<number>();
+  @Output() postDeleted = new EventEmitter<number | string>();
 
   isLoggedIn$: Observable<boolean>;
   currentUser: User | null = null;

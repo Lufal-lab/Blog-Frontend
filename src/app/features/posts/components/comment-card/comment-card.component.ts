@@ -7,6 +7,7 @@ import { Comment } from 'src/app/core/models/comment.model';
   styleUrls: ['./comment-card.component.scss']
 })
 export class CommentCardComponent {
-  @Input() comments: Comment[] = [];
+  @Input() comment! : Comment;
+  // @Input() comments: Comment[] = [];
 
 }
