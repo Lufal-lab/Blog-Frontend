@@ -36,27 +36,30 @@
 /* Si usas la versión 2.0 de Quill, asegúrate de que no falte la base */
 @import 'quill/dist/quill.core.css';
 
-/* 2. Configuración de Alertas */
-.toast-success {
-  --mdc-snackbar-container-color: #2e7d32;
-  --mdc-snackbar-supporting-text-color: #ffffff;
-  .mat-mdc-snack-bar-action { color: #ffffff; }
+
+.toast-success, .toast-error, .toast-warning, .toast-info {
+  /* Fondo casi blanco y texto gris muy oscuro para todos */
+  --mdc-snackbar-container-color: #ffffff; 
+  --mdc-snackbar-supporting-text-color: #1a1a1a; 
+  
+  /* Un borde fino y una sombra sutil para que flote sobre el fondo blanco */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+
+  .mat-mdc-snack-bar-action { 
+    color: #000000 !important; 
+    font-weight: 700;
+  }
 }
 
-.toast-error {
-  --mdc-snackbar-container-color: #d32f2f;
-  --mdc-snackbar-supporting-text-color: #ffffff;
-}
+/* Opcional: Si quieres un detalle mínimo para diferenciarlas sin "chillar" 
+   puedes dejar una pequeña línea lateral del color del tipo de alerta */
 
-.toast-warning {
-  --mdc-snackbar-container-color: #ed6c02;
-  --mdc-snackbar-supporting-text-color: #ffffff;
-}
-
-.toast-info {
-  --mdc-snackbar-container-color: #0288d1;
-  --mdc-snackbar-supporting-text-color: #ffffff;
-}
+.toast-success { border-left: 4px solid #2e7d32; }
+.toast-error   { border-left: 4px solid #d32f2f; }
+.toast-warning { border-left: 4px solid #ed6c02; }
+.toast-info    { border-left: 4px solid #2563eb; }
 
 .container-auth {
   display: flex;

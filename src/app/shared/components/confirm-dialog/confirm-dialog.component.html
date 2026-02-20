@@ -2,18 +2,18 @@
   <h2 mat-dialog-title class="dialog-title">{{ data.title }}</h2>
   
   <mat-dialog-content class="dialog-content">
-    <p>{{ data.message }}</p>
+    <p class="message-text">{{ data.message }}</p>
   </mat-dialog-content>
 
   <mat-dialog-actions align="end" class="dialog-actions">
-    <button mat-button (click)="dialogRef.close(false)" class="btn-cancel">
-      CANCEL
-    </button>
-    <button mat-flat-button 
-            [color]="data.confirmColor || 'primary'" 
-            (click)="dialogRef.close(true)"
-            class="btn-confirm">
-      {{ data.confirmText || 'CONFIRM' }}
-    </button>
+
+    <div class="actions">
+      <button mat-flat-button type="button" (click)="dialogRef.close(true)">
+        {{ data.confirmText || 'CONFIRM' }}
+      </button>
+      <button mat-button type="button" (click)="dialogRef.close(false)">
+        CANCEL
+      </button>
+    </div>
   </mat-dialog-actions>
 </div>

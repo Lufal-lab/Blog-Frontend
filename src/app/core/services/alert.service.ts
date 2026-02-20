@@ -18,7 +18,7 @@ export class AlertService {
     const config: MatSnackBarConfig = {
       duration: 4000,
       horizontalPosition: 'center',
-      verticalPosition: 'bottom',
+      verticalPosition: 'top',
       panelClass: [`toast-${type}`]
     };
     this.snackBar.open(message, 'CLOSE', config);
