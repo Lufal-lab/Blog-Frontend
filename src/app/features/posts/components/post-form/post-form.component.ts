@@ -10,12 +10,37 @@ type PermissionKeys = 'public' | 'authenticated' | 'team' | 'author';
 
 @Component({
   selector: 'app-post-form',
-  templateUrl: './post-form.component.html'
+  templateUrl: './post-form.component.html',
+  styleUrls: ['./post-form.component.scss']
 })
 export class PostFormComponent implements OnInit {
 
   @Input() initialData: any | null = null;
   @Output() submitForm = new EventEmitter<any>();
+
+  quillConfig = {
+  toolbar: [
+    ['bold', 'italic', 'underline', 'strike'],        // Negrita, cursiva, etc.
+    ['blockquote', 'code-block'],                    // <--- ESTE ES EL CUADRO DE CÓDIGO
+
+    [{ 'header': 1 }, { 'header': 2 }],               // Títulos
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'script': 'sub'}, { 'script': 'super' }],      // Subíndice/Superíndice
+    [{ 'indent': '-1'}, { 'indent': '+1' }],          // Sangría
+    [{ 'direction': 'rtl' }],                         // Dirección de texto
+
+    [{ 'size': ['small', false, 'large', 'huge'] }],  // Tamaño de fuente
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+    [{ 'color': [] }, { 'background': [] }],          // Colores
+    [{ 'font': [] }],
+    [{ 'align': [] }],
+
+    ['link', 'image', 'video'],                       // Multimedia
+    ['code'],                                         // <--- ESTE ES EL BOTÓN </> (Inline)
+    ['clean']                                         // Borrar formato
+  ]
+};
 
   private readonly levels: PermissionKeys[] = [
     'public',
@@ -92,57 +117,86 @@ export class PostFormComponent implements OnInit {
     return result;
   }
 
-  private handleHierarchy() {
-    this.form.valueChanges.subscribe(values => {
+private handleHierarchy() {
+  const hierarchy: PermissionKeys[] = ['public', 'authenticated', 'team', 'author'];
 
-      const hierarchy: PermissionKeys[] = [
-        'public',
-        'authenticated',
-        'team',
-        'author'
-      ];
+  hierarchy.forEach((key, index) => {
+    this.form.get(key)?.valueChanges.subscribe(newValue => {
+      console.log(`%c Cambio detectado en: ${key} -> Nuevo valor: ${newValue}`, 'background: #222; color: #bada55; font-size: 12px');
+      
+      if (!newValue) return;
 
-      for (let i = 0; i < hierarchy.length; i++) {
-        const current = hierarchy[i];
-        const value = values[current] as PermissionOption;
-
-        if (value === 'none') {
-          for (let j = 0; j < i; j++) {
-            this.form.patchValue(
-              { [hierarchy[j]]: 'none' },
-              { emitEvent: false }
-            );
-          }
-        }
-
-        if (value === 'read_write') {
-          for (let j = i; j < hierarchy.length; j++) {
-            this.form.patchValue(
-              { [hierarchy[j]]: 'read_write' },
-              { emitEvent: false }
-            );
-          }
-        }
-
-        if (value === 'read_only') {
-          for (let j = i + 1; j < hierarchy.length; j++) {
-            if (this.form.get(hierarchy[j])?.value === 'none') {
-              this.form.patchValue(
-                { [hierarchy[j]]: 'read_only' },
-                { emitEvent: false }
-              );
-            }
-          }
+      if (newValue === 'none') {
+        for (let j = 0; j < index; j++) {
+          console.log(`   -> Forzando ${hierarchy[j]} a NONE porque ${key} es NONE`);
+          this.form.get(hierarchy[j])?.patchValue('none', { emitEvent: false });
         }
       }
+
+      if (newValue === 'read_write') {
+        for (let j = index + 1; j < hierarchy.length; j++) {
+          console.log(`   -> Forzando ${hierarchy[j]} a RW porque ${key} es RW`);
+          this.form.get(hierarchy[j])?.patchValue('read_write', { emitEvent: false });
+        }
+      }
+      
+      if (newValue === 'read_only') {
+         for (let j = index + 1; j < hierarchy.length; j++) {
+            if (this.form.get(hierarchy[j])?.value === 'none') {
+               console.log(`   -> Forzando ${hierarchy[j]} a RO porque ${key} es RO y el actual era NONE`);
+               this.form.get(hierarchy[j])?.patchValue('read_only', { emitEvent: false });
+            }
+         }
+      }
     });
-  }
+  });
+}
+
+//   private handleHierarchy() {
+//   const hierarchy: PermissionKeys[] = ['public', 'authenticated', 'team', 'author'];
+
+//   this.form.valueChanges.subscribe(values => {
+//     // Usamos getRawValue para comparar contra el estado anterior o actual
+//     const currentValues = this.form.getRawValue();
+
+//     hierarchy.forEach((level, i) => {
+//       const value = currentValues[level] as PermissionOption;
+
+//       // REGLA 1: Si pones NONE, los de arriba (izquierda) también son NONE
+//       if (value === 'none') {
+//         for (let j = 0; j < i; j++) {
+//           if (this.form.get(hierarchy[j])?.value !== 'none') { // Solo si es necesario
+//             this.form.patchValue({ [hierarchy[j]]: 'none' }, { emitEvent: false });
+//           }
+//         }
+//       }
+
+//       // REGLA 2: Si pones READ_WRITE, los de abajo (derecha) también son READ_WRITE
+//       if (value === 'read_write') {
+//         for (let j = i + 1; j < hierarchy.length; j++) {
+//           if (this.form.get(hierarchy[j])?.value !== 'read_write') {
+//              this.form.patchValue({ [hierarchy[j]]: 'read_write' }, { emitEvent: false });
+//           }
+//         }
+//       }
+
+//       // REGLA 3: Si pones READ_ONLY, asegurar que los de abajo no sean NONE
+//       if (value === 'read_only') {
+//         for (let j = i + 1; j < hierarchy.length; j++) {
+//           if (this.form.get(hierarchy[j])?.value === 'none') {
+//             this.form.patchValue({ [hierarchy[j]]: 'read_only' }, { emitEvent: false });
+//           }
+//         }
+//       }
+//     });
+//   });
+// }
 
   private buildPayload() {
     const permissions = this.form.getRawValue();
 
     let privacyRead: PrivacyLevel = PrivacyLevel.PUBLIC;
-    let privacyWrite: PrivacyLevel = PrivacyLevel.AUTHOR;
+    let privacyWrite: PrivacyLevel = PrivacyLevel.TEAM;
 
     for (const level of this.levels) {
       const value = permissions[level];
@@ -170,11 +224,16 @@ export class PostFormComponent implements OnInit {
     };
   }
 
+
   onSubmit() {
     if (this.form.invalid) return;
 
     this.submitForm.emit(this.buildPayload());
   }
+
+  onCancel(){
+  this.router.navigate(['']);
+}
 
 
 }

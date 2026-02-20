@@ -1,68 +1,16 @@
-<mat-card class="post-card">
-  <div class="back-container">
-    <button mat-stroked-button type="button" class="back-btn" (click)="goBack()">
-      <mat-icon>arrow_back</mat-icon>
-      Back
-    </button>
+<div>
+  <mat-card class="post-card">
+    <div class="back-container">
+      <button mat-stroked-button type="button" class="back-btn" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </button>
+    </div>
+    <h2 class="title-section">Edit Post</h2>
+      <app-post-form
+        *ngIf="post"
+        [initialData]="post"
+        (submitForm)="updatePost($event)">
+      </app-post-form>
+  </mat-card>
 </div>
-  <!-- <div class="header-row">
-    <div class="title-section">
-      <h2 class="post-title">{{ post.title }}</h2>
-    </div>
-
-    <div class="header-meta">
-      <span class="team-badge">Team {{ post.author_team }}</span>
-      <span class="author-name">{{ post.author_email }}</span>
-      <span class="meta-info">{{ post.created_at | date:'medium' }}</span>
-    </div>
-  </div>
-
-  <div class="post-content-box">
-    <p>{{ post.content }}</p>
-  </div>
-
-  <div class="likes-summary">
-      <span>{{ post.likes_count }} LIKES</span>
-  </div>
-
-
-  <div class="comments-section">
-    <h3 class="section-title">Comments</h3>
-
-    <div *ngIf="loadingComments" class="text-center">Loading comments...</div>
-
-    <app-comment-card
-    *ngFor="let comment of comments"
-    [comment]="comment">
-    </app-comment-card>
-
-
-    <app-pagination
-      [next]="pagination.next"
-      [previous]="pagination.previous"
-      [pageSize]="pageSize"
-      [totalItems]="totalComments"
-      [currentPage]="currentPage"
-      (nextPage)="loadNextComments()"
-      (previousPage)="loadPreviousComments()"
-    ></app-pagination>
-
-    <div *ngIf="isLoggedIn$ | async" class="new-comment-box">
-      <h4 class="form-title">Add New Comment:</h4>
-      <app-comment-form (onSubmit)="handleCommentSubmit($event)"></app-comment-form>
-    </div>
-  </div> -->
-
-
-</mat-card>
-
-
-<h2>Edit Post</h2>
-
-
-
-<app-post-form
-  *ngIf="post"
-  [initialData]="post"
-  (submitForm)="updatePost($event)">
-</app-post-form>

@@ -9,13 +9,20 @@
     <a mat-button routerLink="/auth/register">Register</a>
   </ng-container>
 
-  <!-- Usuario autenticado -->
-  <ng-template #logged>
-    <span class="user-email">Welcome, {{ (userEmail$ | async)?.email }}</span>
-    <button mat-icon-button (click)="logout()" aria-label="Logout">
+    <!-- Usuario autenticado -->
+  <div class="user-section">
+      <ng-template #logged>
+        <span class="user-email">
+          <span 
+          >{{ (userEmail$ | async)?.email }}</span>
+        </span>
+    <button mat-icon-button (click)="onLogout()" aria-label="Logout">
       <mat-icon>logout</mat-icon>
     </button>
   </ng-template>
+  </div>
+
+
 </mat-toolbar>
 
 

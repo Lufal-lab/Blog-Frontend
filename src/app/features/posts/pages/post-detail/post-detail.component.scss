@@ -1,298 +1,17 @@
-// .main-content {
-//   padding-top: 72px;
-// }
-// .comment-item {
-//   padding: 8px;
-//   border-bottom: 1px solid #eee;
-//   margin-bottom: 8px;
-// }
-
-// .new-comment {
-//   margin-top: 16px;
-// }
-
-// .full-width {
-//   width: 100%;
-// }
-
-
-// .post-card {
-//   width: 100%;
-//   max-width: 1050px;   // 🔥 más ancho
-//   margin: 2rem auto;
-//   padding: 2rem;       // 🔥 espacio interno real
-//   border-radius: 18px;
-//   background: #ffffff;
-//   box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-// }
-
-// /* HEADER */
-
-// .header-row {
-//   display: flex;
-//   align-items: center;
-//   justify-content: space-between;  // 🔥 clave
-//   gap: 1rem;
-// }
-
-
-
-// .post-title {
-//   font-size: 1.9rem;
-//   font-weight: 700;
-//   margin: 0;
-//   color: #111;
-// }
-
-// .header-meta {
-//   display: flex;
-//   align-items: center;
-//   gap: 1rem;
-// }
-
-// .team-badge {
-//   background: #eeeeee;
-//   color: #444;
-//   font-size: 0.75rem;
-//   padding: 6px 12px;
-//   border-radius: 14px;
-//   font-weight: 500;
-// }
-
-// .author-name {
-//   font-size: 0.9rem;
-//   font-weight: 500;
-//   color: #333;
-// }
-
-// .meta-info {
-//   font-size: 0.85rem;
-//   color: #777;
-// }
-
-
-// /* EXCERPT */
-
-// .post-excerpt {
-//   margin-top: 1.3rem;
-//   font-size: 1.05rem;
-//   line-height: 1.7;
-//   color: #333;
-// }
-
-// .show-more {
-//   color: #000;
-//   cursor: pointer;
-//   font-weight: 500;
-//   margin-left: 5px;
-// }
-
-// .show-more:hover {
-//   text-decoration: underline;
-// }
-
-// /* ACTIONS ROW */
-
-// .post-actions-row {
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   margin-top: 2rem;
-//   padding-top: 1.2rem;
-//   border-top: 1px solid #f1f1f1;
-// }
-
-// .counts {
-//   display: flex;
-//   gap: 2rem;
-//   font-size: 0.95rem;
-//   color: #555;
-// }
-
-// .clickable {
-//   cursor: pointer;
-// }
-
-// .clickable:hover {
-//   text-decoration: underline;
-// }
-
-// /* BUTTONS */
-
-// .buttons {
-//   display: flex;
-//   gap: 0.6rem;
-// }
-
-// .action-btn {
-//   color: #444;
-//   transition: all 0.2s ease;
-// }
-
-// .action-btn:hover {
-//   color: #000;
-//   background: rgba(0,0,0,0.05);
-// }
-
-// .action-btn mat-icon {
-//   font-size: 21px;
-// }
-
-// /* PRIVACY */
-
-// .privacy-row {
-//   margin-top: 1.4rem;
-//   display: flex;
-//   gap: 1rem;
-// }
-
-// .privacy-badge {
-//   font-size: 0.75rem;
-//   padding: 6px 14px;
-//   border-radius: 10px;
-//   font-weight: 500;
-// }
-
-// .read {
-//   background: #f3f3f3;
-//   color: #333;
-// }
-
-// .write {
-//   background: #eaeaea;
-//   color: #333;
-// }
-
-
-// .action-btn.liked {
-//   font-weight: 700;
-// }
-
-// .action-btn.liked mat-icon {
-//   font-variation-settings: 'FILL' 1;
-// }
-
-
-
-
-// .main-container {
-//   max-width: 1050px;
-//   margin: 2rem auto;
-//   padding: 0 1rem;
-// }
-
-// .back-btn {
-//   margin-bottom: 1.5rem;
-//   font-weight: 700;
-//   border: 1px solid #000 !important; // Estilo botón B&N
-//   border-radius: 0 !important;
-// }
-
-// .post-card {
-//   padding: 3rem;
-//   border-radius: 0; // Más editorial, menos "redondito"
-//   border: 1px solid #000;
-//   box-shadow: none; // Quitamos sombras para que sea plano y elegante
-// }
-
-// /* HEADER IGUAL AL POST CARD */
-// .header-row {
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: flex-start;
-//   margin-bottom: 2rem;
-// }
-
-// .post-title {
-//   font-size: 2.5rem;
-//   font-weight: 900;
-//   text-transform: uppercase;
-//   line-height: 1.1;
-//   margin: 0;
-// }
-
-// .header-meta {
-//   display: flex;
-//   flex-direction: column; // Apilados a la derecha
-//   align-items: flex-end;
-//   gap: 0.3rem;
-
-//   .team-badge {
-//     background: #000;
-//     color: #fff;
-//     padding: 4px 10px;
-//     font-size: 0.7rem;
-//     font-weight: 700;
-//   }
-//   .author-name { font-weight: 700; font-size: 0.9rem; }
-//   .meta-info { font-size: 0.8rem; color: #666; }
-// }
-
-// /* EL CUADRO DE CONTENIDO QUE QUERÍAS */
-// .post-content-box {
-//   border: 1px solid #000; // Recuadro marcado
-//   padding: 2.5rem;
-//   margin: 2rem 0;
-//   font-size: 1.15rem;
-//   line-height: 1.8;
-//   background-color: #fcfcfc;
-// }
-
-// /* LIKES CENTRADOS ENTRE LÍNEAS */
-// .likes-center-divider {
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   margin: 3rem 0;
-//   gap: 1.5rem;
-
-//   .line {
-//     height: 1px;
-//     background-color: #000;
-//     flex-grow: 1; // Las líneas crecen para ocupar el espacio
-//   }
-
-//   .likes-count {
-//     display: flex;
-//     align-items: center;
-//     gap: 0.5rem;
-//     font-weight: 900;
-//     font-size: 1rem;
-//     white-space: nowrap;
-//   }
-// }
-
-// /* SECCIÓN COMENTARIOS */
-// .section-title {
-//   text-align: center;
-//   font-weight: 900;
-//   margin-bottom: 2rem;
-//   text-decoration: underline;
-//   text-underline-offset: 8px;
-// }
-
-// .new-comment-box {
-//   margin-top: 4rem;
-//   padding: 2rem;
-//   border: 1px solid #000; // También el formulario en un cuadro
-
-//   .form-title {
-//     font-weight: 800;
-//     text-transform: uppercase;
-//     margin-bottom: 1.5rem;
-//   }
-// }
-/* Contenedor igual al que tenías */
-
 .post-card {
-  width: 100%;
-  max-width: 1050px;   // 🔥 más ancho
-  margin: 2rem auto;
-  padding: 2rem;       // 🔥 espacio interno real
-  border-radius: 18px;
-  background: #ffffff;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  /* 1. La clave del responsive: */
+  width: 100%;           // Ocupa todo el ancho disponible en móvil
+  max-width: 60rem;      // Pero no crezcas más de 640px en PC
+  
+  /* 2. Limpieza de espacios */
+  margin: 1rem auto;     // Centrada y con aire arriba/abajo
+  padding: 1.5rem;
+  box-sizing: border-box; // Fundamental para que el padding no sume ancho
+  
+  /* 3. Evitar que el contenido interno la rompa */
+  overflow: hidden;      
 }
+
 
 /* HEADER */
 
@@ -302,20 +21,32 @@
   justify-content: space-between;  // 🔥 clave
   gap: 1rem;
 }
-
-
-
 .post-title {
   font-size: 1.9rem;
   font-weight: 700;
   margin: 0;
   color: #111;
+
+  @media (max-width: 30rem) {
+    font-size: 1.4rem; 
+    line-height: 1.2;
+  }
 }
 
 .header-meta {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap; /*  Si el email o la fecha no caben, bajan de línea */
+  color: #666;
+  font-size: 0.85rem;
+
+  /* En móviles muy pequeños, mejor que se alineen a la izquierda */
+  @media (max-width: 30rem) {
+    gap: 0.5rem;
+    justify-content: flex-end;
+    font-size: 0.75rem;
+  }
 }
 
 .team-badge {
@@ -338,17 +69,6 @@
   color: #777;
 }
 
-
-/* EXCERPT */
-
-.post-excerpt {
-  margin-top: 1.3rem;
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: #333;
-}
-
-/* EL CUADRO DE CONTENIDO (Sencillo) */
 .post-content-box {
   margin-top: 1.5rem;
   padding: 1.5rem;
@@ -361,23 +81,33 @@
     line-height: 1.7;
     color: #333;
     margin: 0;
+
+    @media (max-width: 30rem) {
+      font-size: 0.95rem; // Baja de tamaño en móvil
+      line-height: 1.5;
+    }
   }
 }
 
-/* LIKES CENTRADOS (Sin exagerar) */
 .likes-summary {
-  display: flex;            /* Esto es lo que permite alinear hijos */
-  justify-content: center;   /* Centra horizontalmente */
+  display: flex;        
+  justify-content: center;   
   margin: 1rem 0;
   font-weight: 600;
+
+  @media (max-width: 30rem) {
+    font-size: 0.85rem;
+  }
 }
 
-/* SECCIÓN COMENTARIOS */
 .section-title {
   text-align: center;
   font-size: 1.2rem;
   font-weight: 700;
   color: #111;
+  @media (max-width: 30rem) {
+    font-size: 1.05rem; // Baja de tamaño en móvil
+  }
 }
 
 .back-btn {
@@ -390,26 +120,4 @@
   font-weight: 700;
   margin: 0;
   color: #111;
-}
-
-.actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  align-items: center;
-}
-
-button {
-  border-radius: 10px;
-  padding: 0.6rem 1.5rem;
-}
-.back-container {
-  display: flex;
-  justify-content: flex-start;
 }

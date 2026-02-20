@@ -1,0 +1,154 @@
+.post-card {
+  /* 1. La clave del responsive: */
+  width: 100%;           // Ocupa todo el ancho disponible en móvil
+  max-width: 60rem;      // Pero no crezcas más de 640px en PC
+  
+  /* 2. Limpieza de espacios */
+  margin: 1rem auto;     // Centrada y con aire arriba/abajo
+  padding: 1.5rem;
+  box-sizing: border-box; // Fundamental para que el padding no sume ancho
+  
+  /* 3. Evitar que el contenido interno la rompa */
+  overflow: hidden;      
+}
+
+
+// /* HEADER */
+
+// .header-row {
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;  // 🔥 clave
+//   gap: 1rem;
+// }
+// .post-title {
+//   font-size: 1.9rem;
+//   font-weight: 700;
+//   margin: 0;
+//   color: #111;
+
+//   @media (max-width: 30rem) {
+//     font-size: 1.4rem; 
+//     line-height: 1.2;
+//   }
+// }
+
+// .header-meta {
+//   display: flex;
+//   align-items: center;
+//   gap: 1rem;
+//   flex-wrap: wrap; /*  Si el email o la fecha no caben, bajan de línea */
+//   color: #666;
+//   font-size: 0.85rem;
+
+//   /* En móviles muy pequeños, mejor que se alineen a la izquierda */
+//   @media (max-width: 30rem) {
+//     gap: 0.5rem;
+//     justify-content: flex-end;
+//     font-size: 0.75rem;
+//   }
+// }
+
+// .team-badge {
+//   background: #eeeeee;
+//   color: #444;
+//   font-size: 0.75rem;
+//   padding: 6px 12px;
+//   border-radius: 14px;
+//   font-weight: 500;
+// }
+
+// .author-name {
+//   font-size: 0.9rem;
+//   font-weight: 500;
+//   color: #333;
+// }
+
+// .meta-info {
+//   font-size: 0.85rem;
+//   color: #777;
+// }
+
+
+// /* EXCERPT */
+
+// .post-excerpt {
+//   margin-top: 1.3rem;
+//   font-size: 1.05rem;
+//   line-height: 1.7;
+//   color: #333;
+
+//   @media (max-width: 30rem) {
+//     font-size: 0.95rem; 
+//     line-height: 1.5;
+//     margin-top: 1rem;
+//   }
+// }
+
+// .show-more {
+//   color: #000;
+//   cursor: pointer;
+//   font-weight: 500;
+//   margin-left: 5px;
+//   text-decoration: underline;
+// }
+
+// /* ACTIONS ROW */
+
+// .post-actions-row {
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   margin-top: 2rem;
+//   padding-top: 1.2rem;
+//   border-top: 1px solid #f1f1f1;
+// }
+
+// .counts {
+//   display: flex;
+//   gap: 2rem;
+//   font-size: 0.95rem;
+//   color: #555;
+//   @media (max-width: 30rem) {
+//     font-size: 0.85rem;
+//     gap: 1rem;
+//   }
+// }
+
+// .clickable {
+//   cursor: pointer;
+//   text-decoration: underline;
+//   &:hover {
+//     color: #000;
+
+//   }
+// }
+
+// /* BUTTONS */
+
+// .buttons {
+//   display: flex;
+//   gap: 0.6rem;
+// }
+
+// .action-btn {
+//   color: #444;
+//   transition: all 0.2s ease;
+// }
+
+// .action-btn:hover {
+//   color: #000;
+//   background: rgba(0,0,0,0.05);
+// }
+
+// .action-btn mat-icon {
+//   font-size: 21px;
+// }
+
+// .action-btn.liked {
+//   font-weight: 700;
+// }
+
+// .action-btn.liked mat-icon {
+//   font-variation-settings: 'FILL' 1;
+// }

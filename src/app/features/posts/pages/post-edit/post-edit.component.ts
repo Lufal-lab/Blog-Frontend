@@ -3,7 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PostsService } from '../../services/posts.service';
 
 @Component({
-  templateUrl: './post-edit.component.html'
+  selector: 'app-post-edit',
+  templateUrl: './post-edit.component.html',
+  styleUrls: ['./post-edit.component.scss'] 
 })
 export class PostEditComponent implements OnInit {
 
@@ -28,7 +30,7 @@ export class PostEditComponent implements OnInit {
   updatePost(payload: any) {
     this.postsService.updatePost(this.post.id, payload).subscribe({
       next: (updated) => {
-        this.router.navigate(['/posts', updated.id]);
+        this.router.navigate(['/posts']);
       },
       error: () => {
         alert('Error updating post');

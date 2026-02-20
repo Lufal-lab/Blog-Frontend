@@ -5,11 +5,13 @@ import { RouterModule } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { MaterialModule } from './material/material.module';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [
     HeaderComponent,
     PaginationComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -19,7 +21,8 @@ import { MaterialModule } from './material/material.module';
   exports: [
     HeaderComponent,
     PaginationComponent,
-    MaterialModule
+    MaterialModule,
+    ConfirmDialogComponent,
   ]
 })
 export class SharedModule { }

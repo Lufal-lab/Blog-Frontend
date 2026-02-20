@@ -4,6 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Output, EventEmitter } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { AlertService } from 'src/app/core/services/alert.service';
+
 
 import { User } from 'src/app/core/models/user.model';
 import { Post } from 'src/app/core/models/post.model';
@@ -29,6 +31,7 @@ export class PostCardComponent{
 
   constructor(
     private authService: AuthService,
+    private alertService: AlertService,
     private dialog: MatDialog,
     private router: Router,
     private likesService: LikesService,
@@ -106,13 +109,19 @@ export class PostCardComponent{
     }
   }
 
-  deletePost(): void {
-    const confirmed = window.confirm('Alert: Are you sure you want to delete this post?');
+  async onDeletePost(): Promise<void> {
+    const confirmed = await this.alertService.confirm(
+    'Delete Post', 
+    'This action cannot be undone. Are you sure?', 
+    'Delete', 
+    'warn'
+    );
 
     if (!confirmed) return;
 
     this.postsService.deletePost(this.post.id).subscribe(() => {
       this.postDeleted.emit(this.post.id);
+      this.alertService.success('Post deleted');
     });
   }
 

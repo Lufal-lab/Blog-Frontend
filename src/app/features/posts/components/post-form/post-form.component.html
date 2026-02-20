@@ -1,133 +1,113 @@
-<mat-card class="post-card">
-
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="post-form">
-
-    <!-- TITLE -->
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="post-form-container">
+  
+  <div class="header-row">
+    <label class="field-label">Title: </label>
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Title</mat-label>
-      <input matInput formControlName="title" />
+      <input matInput formControlName="title" placeholder="Write the title" />
       <mat-error *ngIf="form.get('title')?.invalid">
         Title is required
       </mat-error>
     </mat-form-field>
+  </div>
 
-    <!-- CONTENT -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Content</mat-label>
-      <textarea matInput rows="6" formControlName="content"></textarea>
-      <mat-error *ngIf="form.get('content')?.invalid">
-        Content is required
-      </mat-error>
-    </mat-form-field>
-
-    <h3 class="section-title">Permissions</h3>
-
-    <!-- HEADER -->
-    <div class="permissions-header">
-      <span>Category</span>
-      <span>Access</span>
+    <div class="editor-header">
+      <span class="field-label">Content:</span>
     </div>
+  <div class="main-editor-card">
 
-    <!-- ROWS -->
-    <div class="permission-row">
-      <span>Public</span>
-      <mat-select formControlName="public">
-        <mat-option value="none">None</mat-option>
-        <mat-option value="read_only">Read Only</mat-option>
-      </mat-select>
+
+    <quill-editor formControlName="content" theme="snow" class="styled-editor">
+      <div quill-editor-toolbar>
+        <span class="ql-formats">
+          <button class="ql-bold"></button>
+          <button class="ql-italic"></button>
+          <button class="ql-underline"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-align" value=""></button>
+          <button class="ql-align" value="center"></button>
+          <button class="ql-align" value="right"></button>
+          <button class="ql-align" value="justify"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-list" value="ordered"></button>
+          <button class="ql-list" value="bullet"></button>
+        </span>
+        <span class="ql-formats">
+          <select class="ql-header">
+            <option selected></option>
+            <option value="1"></option>
+            <option value="2"></option>
+          </select>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-color"></button>
+          <button class="ql-image"></button>
+          <button class="ql-link"></button>
+          <button class="ql-code"></button>
+          <button class="ql-code-block"></button>
+          <button class="ql-clean"></button>
+        </span>
+      </div>
+    </quill-editor>
+
+  <mat-error *ngIf="form.get('content')?.invalid">
+    Content is required
+  </mat-error>
+</div>
+
+<div class="permissions-container">
+  <fieldset class="permissions-fieldset">
+    <legend class="permissions-legend">Permissions</legend>
+    
+    <div class="permissions-grid">
+      <div class="grid-header">Category</div>
+      <div class="grid-header">Access</div>
+
+      <div class="category-item">Public</div>
+      <div class="access-item">
+        <mat-select formControlName="public" class="custom-select">
+          <mat-option value="none">None</mat-option>
+          <mat-option value="read_only">Read Only</mat-option>
+        </mat-select>
+      </div>
+
+      <div class="category-item">Authenticated</div>
+      <div class="access-item">
+        <mat-select formControlName="authenticated" class="custom-select">
+          <mat-option value="none">None</mat-option>
+          <mat-option value="read_only">Read Only</mat-option>
+          <mat-option value="read_write">Read & Write</mat-option>
+        </mat-select>
+      </div>
+
+      <div class="category-item">Team</div>
+      <div class="access-item">
+        <mat-select formControlName="team" class="custom-select">
+          <mat-option value="none">None</mat-option>
+          <mat-option value="read_only">Read Only</mat-option>
+          <mat-option value="read_write">Read & Write</mat-option>
+        </mat-select>
+      </div>
+
+      <div class="category-item">Owner</div>
+      <div class="access-item">
+        <mat-select formControlName="author" class="custom-select">
+          <mat-option value="read_write">Read & Write</mat-option>
+        </mat-select>
+      </div>
     </div>
+  </fieldset>
+</div>
 
-    <div class="permission-row">
-      <span>Authenticated</span>
-      <mat-select formControlName="authenticated">
-        <mat-option value="none">None</mat-option>
-        <mat-option value="read_only">Read Only</mat-option>
-        <mat-option value="read_write">Read & Write</mat-option>
-      </mat-select>
-    </div>
 
-    <div class="permission-row">
-      <span>Team</span>
-      <mat-select formControlName="team">
-        <mat-option value="none">None</mat-option>
-        <mat-option value="read_only">Read Only</mat-option>
-        <mat-option value="read_write">Read & Write</mat-option>
-      </mat-select>
-    </div>
-
-    <div class="permission-row">
-      <span>Owner</span>
-      <mat-select formControlName="author">
-        <mat-option value="read_write">Read & Write</mat-option>
-      </mat-select>
-    </div>
-
-    <div class="buttons">
-      <button mat-raised-button color="primary" type="submit">
-        Save
+    <div class="actions">
+      <button mat-flat-button type="submit" [disabled]="form.invalid">
+        Save Post
+      </button>
+      <button mat-button type="button" (click)="onCancel()">
+        Cancel
       </button>
     </div>
 
   </form>
-
-
-</mat-card>
-
-
-<!-- <mat-card class="post-card">
-  <div class="back-container">
-    <button mat-stroked-button type="button" class="back-btn" (click)="goBack()">
-      <mat-icon>arrow_back</mat-icon>
-      Back
-    </button>
-</div>
-  <div class="header-row">
-    <div class="title-section">
-      <h2 class="post-title">{{ post.title }}</h2>
-    </div>
-
-    <div class="header-meta">
-      <span class="team-badge">Team {{ post.author_team }}</span>
-      <span class="author-name">{{ post.author_email }}</span>
-      <span class="meta-info">{{ post.created_at | date:'medium' }}</span>
-    </div>
-  </div>
-
-  <div class="post-content-box">
-    <p>{{ post.content }}</p>
-  </div>
-
-  <div class="likes-summary">
-      <span>{{ post.likes_count }} LIKES</span>
-  </div>
-
-
-  <div class="comments-section">
-    <h3 class="section-title">Comments</h3>
-
-    <div *ngIf="loadingComments" class="text-center">Loading comments...</div>
-
-    <app-comment-card
-    *ngFor="let comment of comments"
-    [comment]="comment">
-    </app-comment-card>
-
-
-    <app-pagination
-      [next]="pagination.next"
-      [previous]="pagination.previous"
-      [pageSize]="pageSize"
-      [totalItems]="totalComments"
-      [currentPage]="currentPage"
-      (nextPage)="loadNextComments()"
-      (previousPage)="loadPreviousComments()"
-    ></app-pagination>
-
-    <div *ngIf="isLoggedIn$ | async" class="new-comment-box">
-      <h4 class="form-title">Add New Comment:</h4>
-      <app-comment-form (onSubmit)="handleCommentSubmit($event)"></app-comment-form>
-    </div>
-  </div>
-
-
-</mat-card> -->

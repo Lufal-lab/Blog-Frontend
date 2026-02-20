@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+
+import { AlertService } from 'src/app/core/services/alert.service';
 import { User } from 'src/app/core/models/user.model';
 
 @Component({
@@ -16,15 +18,28 @@ export class HeaderComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
+    private alertService: AlertService,
   ){
     this.isLoggedIn$ = this.authService.authStatus();
     this.userEmail$ = this.authService.currentUser();
   }
 
-  logout(){
+  async onLogout(){
+    const confirmed = await this.alertService.confirm(
+    'Logout', 
+    'Are you sure you want to log out?', 
+    'Logout', 
+    'primary'
+  );
+
+  if (confirmed) {
     this.authService.logout().subscribe(() => {
       this.router.navigate(['']);
-    },);
+      this.alertService.success('Successfully logged out!');
+    });
+  }
+
+
   }
 
 }

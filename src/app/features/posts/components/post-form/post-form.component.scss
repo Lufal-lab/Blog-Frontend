@@ -1,129 +1,127 @@
-.post-card {
-  width: 100%;
-  max-width: 1050px;   // 🔥 más ancho
-  margin: 2rem auto;
-  padding: 2rem;       // 🔥 espacio interno real
-  border-radius: 18px;
-  background: #ffffff;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-}
-
-/* HEADER */
-
-.header-row {
+.post-form-container {
+  padding: 1.5rem; // El margen al padre que pediste
   display: flex;
-  align-items: center;
-  justify-content: space-between;  // 🔥 clave
-  gap: 1rem;
+  flex-direction: column;
+  gap: 2rem;
 }
 
-
-
-.post-title {
-  font-size: 1.9rem;
-  font-weight: 700;
-  margin: 0;
-  color: #111;
-}
-
-.header-meta {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.team-badge {
-  background: #eeeeee;
-  color: #444;
-  font-size: 0.75rem;
-  padding: 6px 12px;
-  border-radius: 14px;
-  font-weight: 500;
-}
-
-.author-name {
-  font-size: 0.9rem;
-  font-weight: 500;
+.field-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
   color: #333;
 }
 
-.meta-info {
-  font-size: 0.85rem;
-  color: #777;
+/* Configuración del Editor */
+.main-editor-card {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  overflow: hidden;
+
+//   .editor-header {
+//     padding: 0.75rem 1.5rem;
+//     background-color: #f5f5f5;
+//     border-bottom: 1px solid #f1f1f1;
+//     font-weight: 600;
+//   }
 }
 
+::ng-deep .styled-editor {
+  /* Centra la barra de herramientas */
+  .ql-toolbar.ql-snow {
+    display: flex;
+    justify-content: center; /* Centra los grupos de botones */
+    flex-wrap: wrap;
+    border: none;
+    border-bottom: 1px solid #f1f1f1;
+    padding: 1rem !important;
+  }
 
-/* EXCERPT */
+  /* Centra y limita el ancho del área de escritura si es necesario */
+  .ql-container.ql-snow {
+    border: none;
+    background: white;
+    display: flex;
+    justify-content: center;
 
-.post-excerpt {
-  margin-top: 1.3rem;
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: #333;
-}
-
-/* EL CUADRO DE CONTENIDO (Sencillo) */
-.post-content-box {
-  margin-top: 1.5rem;
-  padding: 1.5rem;
-  border: 1px solid #f1f1f1; // Línea muy suave
-  border-radius: 12px;
-  background-color: #fafafa;
-
-  p {
-    font-size: 1.05rem; // Tu tamaño de excerpt
-    line-height: 1.7;
-    color: #333;
-    margin: 0;
+    .ql-editor {
+      width: 100%;
+      max-width: 95%; /* Deja un pequeño margen interno para que se vea centrado */
+      min-height: 15rem;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
   }
 }
 
-/* LIKES CENTRADOS (Sin exagerar) */
-.likes-summary {
-  display: flex;            /* Esto es lo que permite alinear hijos */
-  justify-content: center;   /* Centra horizontalmente */
-  margin: 1rem 0;
-  font-weight: 600;
+/* 1. CONTENEDOR PRINCIPAL CON MARGEN */
+.permissions-container {
+  margin-top: 2rem;
+  width: 100%;
 }
 
-/* SECCIÓN COMENTARIOS */
-.section-title {
-  text-align: center;
-  font-size: 1.2rem;
+/* 2. EL RECUADRO (FIELDSET) */
+.permissions-fieldset {
+  border: 1px solid #f1f1f1; // Línea suave como tu contenido
+  border-radius: 12px;
+  padding: 1.5rem;
+  background-color: #fafafa; // Fondo que venimos usando
+}
+
+/* 3. TÍTULO "Permissions" */
+.permissions-legend {
+  padding: 0 10px;
   font-weight: 700;
-  color: #111;
-}
-
-.back-btn {
-  margin-bottom: 1rem;
-  text-transform: none;
-}
-
-.form-title {
   font-size: 1.2rem;
-  font-weight: 700;
-  margin: 0;
-  color: #111;
+  color: #333;
 }
 
-.actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
+/* 4. GRID RESPONSIVO (LAS DOS COLUMNAS) */
+.permissions-grid {
+  display: grid;
+  /* Dos columnas iguales por defecto */
+  grid-template-columns: 1fr 1fr; 
+  gap: 1.5rem; 
   align-items: center;
+
+  /* RESPONSIVE: Si la pantalla es pequeña (móvil), se vuelve una sola columna */
+  @media (max-width: 40rem) {
+    grid-template-columns: 1fr; 
+    gap: 1rem;
+  }
 }
 
-button {
-  border-radius: 10px;
-  padding: 0.6rem 1.5rem;
+/* 5. TÍTULOS DE COLUMNA (Category y Access) */
+.grid-header {
+  font-size: 1.1rem; 
+  font-weight: 700;
+  color: #666;
+  margin-bottom: 0.5rem;
+
+  /* Ocultar el segundo encabezado en móvil para que no se vea raro */
+  @media (max-width: 40rem) {
+    &:nth-child(2) { display: none; } 
+  }
 }
-.back-container {
-  display: flex;
-  justify-content: flex-start;
+
+/* 6. ESTILO DE LAS FILAS (Category y Select) */
+.category-item {
+  font-size: 1.05rem; // Tu tamaño estándar
+  color: #333;
+  font-weight: 500;
+}
+
+.access-item {
+  width: 100%;
+  
+  .custom-select {
+    width: 100%;
+    max-width: 18rem; // Evita que crezca infinito en pantallas grandes
+    background: white;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 1.05rem; // Tu tamaño estándar
+  }
 }

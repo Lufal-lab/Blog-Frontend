@@ -1,6 +1,6 @@
-<div class="container">
+<div class="container-auth">
   <div class="login">
-    <mat-card class="register-card">
+    <mat-card class="auth-card">
       <h2>User Login</h2>
 
       <form [formGroup]="form" (ngSubmit)="login($event)">
@@ -48,34 +48,18 @@
         </mat-form-field>
 
         <div class="actions">
-  <button mat-flat-button type="submit" [disabled]="form.invalid">
-    Log In
-  </button>
-
-  <button mat-button type="button" (click)="cancel()">
-    Cancel
-  </button>
-</div>
-
-<p class="login-link">
-  Don't have an account?
-  <a routerLink="/auth/register">Register</a>
-</p>
-
-        <!-- <div class="actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
-            Submit
+          <button mat-flat-button type="submit" [disabled]="form.invalid">
+            Log In
           </button>
-
           <button mat-button type="button" (click)="cancel()">
             Cancel
           </button>
         </div>
 
-        <p class="login-link">
-          Don't have an account?
-          <a mat-button color="accent" routerLink="/auth/register">Register</a>
-        </p> -->
+<p class="link">
+  Don't have an account?
+  <a routerLink="/auth/register">Register</a>
+</p>
 
       </form>
     </mat-card>
@@ -87,11 +71,4 @@
   </div>
 
 </div>
-
-<!-- <mat-card *ngIf="error" class="error-card">
-  <mat-error>
-    {{ error }}
-  </mat-error>
-</mat-card> -->
-
 

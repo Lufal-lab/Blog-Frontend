@@ -1,23 +1,81 @@
+// // @import "@angular/material/prebuilt-themes/purple-green.css";
+// /* Estilos Globales para Alertas (Snack-bars) */
+// body {
+//   background-color: var(--bg-app);
+//   color: var(--text-main);
+//   font-family: 'Roboto', sans-serif;
+//   margin: 0;
+// }
+
+// .toast-success {
+//   --mdc-snackbar-container-color: #2e7d32; // Verde
+//   --mdc-snackbar-supporting-text-color: #ffffff;
+//   .mat-mdc-snack-bar-action { color: #ffffff; }
+// }
+
+// .toast-error {
+//   --mdc-snackbar-container-color: #d32f2f; // Rojo
+//   --mdc-snackbar-supporting-text-color: #ffffff;
+// }
+
+// .toast-warning {
+//   --mdc-snackbar-container-color: #ed6c02; // Naranja
+//   --mdc-snackbar-supporting-text-color: #ffffff;
+// }
+
+// .toast-info {
+//   --mdc-snackbar-container-color: #0288d1; // Azul
+//   --mdc-snackbar-supporting-text-color: #ffffff;
+// }
+
+/* --- 1. CONFIGURACIÓN DE TEMA Y VARIABLES --- */
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
+/* Importante para que aparezcan los iconos (Bold, Italic, Link, etc) */
+@import 'quill/dist/quill.snow.css';
+
+/* Si usas la versión 2.0 de Quill, asegúrate de que no falte la base */
+@import 'quill/dist/quill.core.css';
+
+/* 2. Configuración de Alertas */
 .toast-success {
-  --mdc-snackbar-container-color: #2e7d32; // Verde oscuro
-  --mdc-snackbar-supporting-text-color: white;
+  --mdc-snackbar-container-color: #2e7d32;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  .mat-mdc-snack-bar-action { color: #ffffff; }
 }
 
-// Error (Rojo)
 .toast-error {
-  --mdc-snackbar-container-color: #d32f2f; // Rojo
-  --mdc-snackbar-supporting-text-color: white;
+  --mdc-snackbar-container-color: #d32f2f;
+  --mdc-snackbar-supporting-text-color: #ffffff;
 }
 
-// Advertencia (Naranja)
 .toast-warning {
-  --mdc-snackbar-container-color: #ed6c02; // Naranja
-  --mdc-snackbar-supporting-text-color: white;
+  --mdc-snackbar-container-color: #ed6c02;
+  --mdc-snackbar-supporting-text-color: #ffffff;
 }
 
-// Información (Azul)
 .toast-info {
-  --mdc-snackbar-container-color: #0288d1; // Azul
-  --mdc-snackbar-supporting-text-color: white;
+  --mdc-snackbar-container-color: #0288d1;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+
+.container-auth {
+  display: flex;
+  flex-direction: column; // Para que el error quede debajo del card
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 0.5rem;
+  background-color: #fafafa;
+}
+
+.container {
+  padding: 0.5rem;
+  background-color: #fafafa;
+}
+
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }

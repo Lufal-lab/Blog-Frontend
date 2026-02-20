@@ -13,6 +13,7 @@ import { CommentFormComponent } from './components/comment-form/comment-form.com
 import { CommentCardComponent } from './components/comment-card/comment-card.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PostFormComponent } from './components/post-form/post-form.component';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { PostFormComponent } from './components/post-form/post-form.component';
     PostsRoutingModule,
     SharedModule,
     ReactiveFormsModule,
+    QuillModule.forRoot()
   ]
 })
 export class PostsModule { }
