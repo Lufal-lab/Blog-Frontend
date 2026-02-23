@@ -9,9 +9,10 @@
 
 .auth-card {
   width: 100%;
-  max-width: 40rem; // Los 640px que te gustan
+  max-width: 40rem;
   padding: 2rem;
-  background-color: #ffffff;
+  background-color:#ffffff;
+  border: 2px solid #0ea5e9; 
   border-radius: 4px; // Mantenemos tus 4px
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }

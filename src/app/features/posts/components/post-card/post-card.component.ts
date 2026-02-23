@@ -67,10 +67,18 @@ export class PostCardComponent{
     }
 
     if (
-      this.post.privacy_write === 'team' &&
+      this.post.privacy_write === 'team'
+      // && this.post.author_team !== "Default"
+      &&
       this.currentUser.team === this.post.author_team
     ) {
       return true;
+    }
+
+    if (
+      this.post.privacy_write === 'authenticated'
+    ){
+      return true
     }
 
     return false
@@ -111,9 +119,9 @@ export class PostCardComponent{
 
   async onDeletePost(): Promise<void> {
     const confirmed = await this.alertService.confirm(
-    'Delete Post', 
-    'This action cannot be undone. Are you sure?', 
-    'Delete', 
+    'Delete Post',
+    'This action cannot be undone. Are you sure?',
+    'Delete',
     'warn'
     );
 

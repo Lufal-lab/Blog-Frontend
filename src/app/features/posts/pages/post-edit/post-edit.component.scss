@@ -1,20 +1,22 @@
 .post-card {
   /* 1. La clave del responsive: */
   width: 100%;           // Ocupa todo el ancho disponible en móvil
-  max-width: 60rem;      // Pero no crezcas más de 640px en PC
-  
+  max-width: 45rem;      // Pero no crezcas más de 640px en PC
+
   /* 2. Limpieza de espacios */
   margin: 1rem auto;     // Centrada y con aire arriba/abajo
   padding: 1.5rem;
   box-sizing: border-box; // Fundamental para que el padding no sume ancho
-  
+
   /* 3. Evitar que el contenido interno la rompa */
-  overflow: hidden;      
+  overflow: hidden;
 }
 
 .back-btn {
   margin-bottom: 1rem;
   text-transform: none;
+  background-color: #0ea5e9;
+  color: white;
 }
 
 .title-row {
@@ -25,7 +27,7 @@
   text-align: center;
 
   @media (max-width: 30rem) {
-    font-size: 1.4rem; 
+    font-size: 1.4rem;
     line-height: 1.2;
   }
 }

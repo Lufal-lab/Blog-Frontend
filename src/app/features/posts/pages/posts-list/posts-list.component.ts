@@ -43,8 +43,13 @@ export class PostsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadPosts();
-  }
 
+    this.authService.authStatus().subscribe(isLoggedIn => {
+      if (!isLoggedIn) {
+        this.loadPosts();
+      }
+    });
+  }
 
 
   private loadPosts(): void {
@@ -142,4 +147,5 @@ export class PostsComponent implements OnInit {
   createPost(): void {
     this.router.navigate(['/posts/create']); // ruta al formulario de creación
   }
+
 }

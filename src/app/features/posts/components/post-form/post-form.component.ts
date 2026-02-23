@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { PrivacyLevel } from 'src/app/core/models/privacy-level.enum';
 
+import { noWhitespaceValidator} from 'src/app/shared/validators/no-with-space.validators'
 
 export type PermissionOption = 'none' | 'read_only' | 'read_write';
 type PermissionKeys = 'public' | 'authenticated' | 'team' | 'author';
@@ -23,16 +24,14 @@ export class PostFormComponent implements OnInit {
     ['bold', 'italic', 'underline', 'strike'],        // Negrita, cursiva, etc.
     ['blockquote', 'code-block'],                    // <--- ESTE ES EL CUADRO DE CÓDIGO
 
-    [{ 'header': 1 }, { 'header': 2 }],               // Títulos
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],             // Títulos
     [{ 'list': 'ordered'}, { 'list': 'bullet' }],
     [{ 'script': 'sub'}, { 'script': 'super' }],      // Subíndice/Superíndice
     [{ 'indent': '-1'}, { 'indent': '+1' }],          // Sangría
     [{ 'direction': 'rtl' }],                         // Dirección de texto
 
     [{ 'size': ['small', false, 'large', 'huge'] }],  // Tamaño de fuente
-    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-    [{ 'color': [] }, { 'background': [] }],          // Colores
+    [{ color: [] }, { background: [] }],
     [{ 'font': [] }],
     [{ 'align': [] }],
 
@@ -50,8 +49,8 @@ export class PostFormComponent implements OnInit {
   ];
 
   form = this.fb.nonNullable.group({
-    title: ['', Validators.required],
-    content: ['', Validators.required],
+    title: ['', [Validators.required, noWhitespaceValidator]],
+    content: ['', [Validators.required, noWhitespaceValidator]],
 
     public: ['read_only' as PermissionOption],
     authenticated: ['read_only' as PermissionOption],
@@ -123,7 +122,7 @@ private handleHierarchy() {
   hierarchy.forEach((key, index) => {
     this.form.get(key)?.valueChanges.subscribe(newValue => {
       console.log(`%c Cambio detectado en: ${key} -> Nuevo valor: ${newValue}`, 'background: #222; color: #bada55; font-size: 12px');
-      
+
       if (!newValue) return;
 
       if (newValue === 'none') {
@@ -139,58 +138,18 @@ private handleHierarchy() {
           this.form.get(hierarchy[j])?.patchValue('read_write', { emitEvent: false });
         }
       }
-      
+
       if (newValue === 'read_only') {
-         for (let j = index + 1; j < hierarchy.length; j++) {
-            if (this.form.get(hierarchy[j])?.value === 'none') {
-               console.log(`   -> Forzando ${hierarchy[j]} a RO porque ${key} es RO y el actual era NONE`);
-               this.form.get(hierarchy[j])?.patchValue('read_only', { emitEvent: false });
+        for (let j = index + 1; j < hierarchy.length; j++) {
+          if (this.form.get(hierarchy[j])?.value === 'none') {
+            console.log(`   -> Forzando ${hierarchy[j]} a RO porque ${key} es RO y el actual era NONE`);
+            this.form.get(hierarchy[j])?.patchValue('read_only', { emitEvent: false });
             }
-         }
+        }
       }
     });
   });
 }
-
-//   private handleHierarchy() {
-//   const hierarchy: PermissionKeys[] = ['public', 'authenticated', 'team', 'author'];
-
-//   this.form.valueChanges.subscribe(values => {
-//     // Usamos getRawValue para comparar contra el estado anterior o actual
-//     const currentValues = this.form.getRawValue();
-
-//     hierarchy.forEach((level, i) => {
-//       const value = currentValues[level] as PermissionOption;
-
-//       // REGLA 1: Si pones NONE, los de arriba (izquierda) también son NONE
-//       if (value === 'none') {
-//         for (let j = 0; j < i; j++) {
-//           if (this.form.get(hierarchy[j])?.value !== 'none') { // Solo si es necesario
-//             this.form.patchValue({ [hierarchy[j]]: 'none' }, { emitEvent: false });
-//           }
-//         }
-//       }
-
-//       // REGLA 2: Si pones READ_WRITE, los de abajo (derecha) también son READ_WRITE
-//       if (value === 'read_write') {
-//         for (let j = i + 1; j < hierarchy.length; j++) {
-//           if (this.form.get(hierarchy[j])?.value !== 'read_write') {
-//              this.form.patchValue({ [hierarchy[j]]: 'read_write' }, { emitEvent: false });
-//           }
-//         }
-//       }
-
-//       // REGLA 3: Si pones READ_ONLY, asegurar que los de abajo no sean NONE
-//       if (value === 'read_only') {
-//         for (let j = i + 1; j < hierarchy.length; j++) {
-//           if (this.form.get(hierarchy[j])?.value === 'none') {
-//             this.form.patchValue({ [hierarchy[j]]: 'read_only' }, { emitEvent: false });
-//           }
-//         }
-//       }
-//     });
-//   });
-// }
 
   private buildPayload() {
     const permissions = this.form.getRawValue();

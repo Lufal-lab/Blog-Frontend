@@ -13,30 +13,23 @@ import { PostEditComponent } from './pages/post-edit/post-edit.component';
 import { PostCreateComponent } from './pages/post-create/post-create.component';
 
 const routes: Routes = [
-  // {
-  //   path: '',
-  //   component: PostsComponent
-  // },
-  // {
-  //   path: ':id',
-  //   component: PostDetailComponent
-  // }
 
   {
     path: 'posts/create',
     component: PostCreateComponent,
-    // canActivate: [AuthGuard]
+    canActivate: [AuthGuard]
   },
   {
     path: 'posts/:id/edit',
     component: PostEditComponent,
-    // canActivate: [AuthGuard]
+    canActivate: [AuthGuard]
   },
 
 
   {
     path: 'posts/:id',
-    component: PostDetailComponent
+    component: PostDetailComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'posts',

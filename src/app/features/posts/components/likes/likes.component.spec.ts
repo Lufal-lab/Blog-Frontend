@@ -33,97 +33,108 @@ describe('LikesComponent', () => {
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(LikesComponent);
     component = fixture.componentInstance;
     likesService = TestBed.inject(LikesService);
   });
 
-  it('should create', () => {
+  afterEach(() => {
+    component.likes = [];
+    component.pagination = { next: null, previous: null };
+    component.error = null;
+    component.loading = true;
+    component.currentPage = 1;
+  });
+
+  it('should create component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load likes on init', () => {
-    spyOn(likesService, 'getLikesByPost').and.returnValue(of(dummyPaginated));
+  describe('ngOnInit', () => {
+    it('should load likes on init', () => {
+      spyOn(likesService, 'getLikesByPost').and.returnValue(of(dummyPaginated));
 
-    component.ngOnInit();
+      component.ngOnInit();
 
-    expect(likesService.getLikesByPost).toHaveBeenCalledWith(1);
-    expect(component.likes.length).toBe(2);
-    expect(component.totalItems).toBe(2);
-    expect(component.loading).toBeFalse();
-    expect(component.pagination.next).toBe('/api/posts/1/likes/?page=2');
-    expect(component.pagination.previous).toBeNull();
+      expect(likesService.getLikesByPost).toHaveBeenCalledWith(1);
+      expect(component.likes.length).toBe(2);
+      expect(component.totalItems).toBe(2);
+      expect(component.loading).toBeFalse();
+      expect(component.pagination.next).toBe('/api/posts/1/likes/?page=2');
+      expect(component.pagination.previous).toBeNull();
+    });
+
+    it('should handle error when getLikesByPost fails', () => {
+      spyOn(likesService, 'getLikesByPost').and.returnValue(throwError(() => ({ status: 500 })));
+
+      component.ngOnInit();
+
+      expect(component.error).toBe('Likes could not be loaded');
+      expect(component.loading).toBeFalse();
+    });
   });
 
-  it('loadNext should call getByUrl if next exists', () => {
-    component.pagination.next = '/api/posts/1/likes/?page=2';
-    spyOn(likesService, 'getByUrl').and.returnValue(of(dummyPaginated));
+  describe('loadNext', () => {
+    it('should call getByUrl if next exists', () => {
+      component.pagination.next = '/api/posts/1/likes/?page=2';
+      spyOn(likesService, 'getByUrl').and.returnValue(of(dummyPaginated));
 
-    component.loadNext();
+      component.loadNext();
 
-    expect(likesService.getByUrl).toHaveBeenCalledWith('/api/posts/1/likes/?page=2');
-    expect(component.currentPage).toBe(2); // inicial 1 + 1
+      expect(likesService.getByUrl).toHaveBeenCalledWith('/api/posts/1/likes/?page=2');
+      expect(component.currentPage).toBe(2);
+    });
+
+    it('should do nothing if next is null', () => {
+      component.pagination.next = null;
+      spyOn(likesService, 'getByUrl');
+
+      component.loadNext();
+
+      expect(likesService.getByUrl).not.toHaveBeenCalled();
+    });
+
+    it('should handle error when getByUrl fails', () => {
+      component.pagination.next = '/api/posts/1/likes/?page=2';
+      spyOn(likesService, 'getByUrl').and.returnValue(throwError(() => ({ status: 500 })));
+
+      component.loadNext();
+
+      expect(component.error).toBe('Likes could not be loaded');
+      expect(component.loading).toBeFalse();
+    });
   });
 
-  it('loadNext should do nothing if next is null', () => {
-    component.pagination.next = null;
-    spyOn(likesService, 'getByUrl');
+  describe('loadPrevious', () => {
+    it('should call getByUrl if previous exists', () => {
+      component.pagination.previous = '/api/posts/1/likes/?page=1';
+      component.currentPage = 2;
+      spyOn(likesService, 'getByUrl').and.returnValue(of(dummyPaginated));
 
-    component.loadNext();
+      component.loadPrevious();
 
-    expect(likesService.getByUrl).not.toHaveBeenCalled();
+      expect(likesService.getByUrl).toHaveBeenCalledWith('/api/posts/1/likes/?page=1');
+      expect(component.currentPage).toBe(1);
+    });
+
+    it('should do nothing if previous is null', () => {
+      component.pagination.previous = null;
+      spyOn(likesService, 'getByUrl');
+
+      component.loadPrevious();
+
+      expect(likesService.getByUrl).not.toHaveBeenCalled();
+    });
+
+    it('should handle error when getByUrl fails', () => {
+      component.pagination.previous = '/api/posts/1/likes/?page=1';
+      spyOn(likesService, 'getByUrl').and.returnValue(throwError(() => ({ status: 500 })));
+
+      component.loadPrevious();
+
+      expect(component.error).toBe('Likes could not be loaded');
+      expect(component.loading).toBeFalse();
+    });
   });
-
-  it('loadPrevious should call getByUrl if previous exists', () => {
-    component.pagination.previous = '/api/posts/1/likes/?page=1';
-    component.currentPage = 2;
-    spyOn(likesService, 'getByUrl').and.returnValue(of(dummyPaginated));
-
-    component.loadPrevious();
-
-    expect(likesService.getByUrl).toHaveBeenCalledWith('/api/posts/1/likes/?page=1');
-    expect(component.currentPage).toBe(1);
-  });
-
-  it('loadPrevious should do nothing if previous is null', () => {
-    component.pagination.previous = null;
-    spyOn(likesService, 'getByUrl');
-
-    component.loadPrevious();
-
-    expect(likesService.getByUrl).not.toHaveBeenCalled();
-  });
-
-  it('should handle error on getLikesByPost', () => {
-    spyOn(likesService, 'getLikesByPost').and.returnValue(throwError(() => ({ status: 500 })));
-
-    component.ngOnInit();
-
-    expect(component.error).toBe('Likes could not be loaded');
-    expect(component.loading).toBeFalse();
-  });
-
-  it('should handle error on loadNext', () => {
-    component.pagination.next = '/api/posts/1/likes/?page=2';
-    spyOn(likesService, 'getByUrl').and.returnValue(throwError(() => ({ status: 500 })));
-
-    component.loadNext();
-
-    expect(component.error).toBe('Likes could not be loaded');
-    expect(component.loading).toBeFalse();
-  });
-
-  it('should handle error on loadPrevious', () => {
-    component.pagination.previous = '/api/posts/1/likes/?page=1';
-    spyOn(likesService, 'getByUrl').and.returnValue(throwError(() => ({ status: 500 })));
-
-    component.loadPrevious();
-
-    expect(component.error).toBe('Likes could not be loaded');
-    expect(component.loading).toBeFalse();
-  });
-
 });

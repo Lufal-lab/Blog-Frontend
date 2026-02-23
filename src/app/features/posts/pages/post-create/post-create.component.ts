@@ -22,9 +22,9 @@ export class PostCreateComponent {
         this.router.navigate(['/posts']);
         this.alertService.success('Post published successfully!');
       },
-      error: () => {
-        alert('Error creating post');
-      }
+      // error: () => {
+      //   alert('Error creating post');
+      // }
     });
   }
 

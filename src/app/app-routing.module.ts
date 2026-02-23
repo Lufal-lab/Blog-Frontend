@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { NotFoundComponent } from './features/not-found/not-found.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 
 const routes: Routes = [
@@ -26,26 +25,6 @@ const routes: Routes = [
 
   },
 
-
-  // { path: 'login',
-  //   component: LoginFormComponent },
-  // {
-  //   path: 'posts',
-  //   component: PostsComponent
-  // },
-  // {
-  //   path: 'posts/:id',
-  //   component: PostIdComponent
-  // },
-  // {
-  //   path: '',
-  //   redirectTo: 'posts',
-  //   pathMatch: 'full'
-  // },
-  // {
-  //   path: '**',
-  //   component: NotFoundComponent
-  // }
 ];
 
 @NgModule({

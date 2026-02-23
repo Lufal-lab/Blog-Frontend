@@ -1,6 +1,7 @@
 <!-- Toolbar fijo arriba -->
 <mat-toolbar class="app-toolbar">
-  <span class="logo">My Blog</span>
+  <!-- <span class="logo">My Blog</span> -->
+  <span class="logo" routerLink="/">My Blog</span>
   <span class="spacer"></span>
 
   <!-- Usuario no autenticado -->
@@ -11,11 +12,17 @@
 
     <!-- Usuario autenticado -->
   <div class="user-section">
-      <ng-template #logged>
-        <span class="user-email">
-          <span 
-          >{{ (userEmail$ | async)?.email }}</span>
-        </span>
+    <ng-template #logged>
+      <div class="user-info">
+          <span class="user-email">
+          <span
+            >{{ (userEmail$ | async)?.email }}</span>
+          </span>
+          <span class="user-team"
+            >Team: {{ (userEmail$ | async)?.team}}
+          </span>
+      </div>
+
     <button mat-icon-button (click)="onLogout()" aria-label="Logout">
       <mat-icon>logout</mat-icon>
     </button>

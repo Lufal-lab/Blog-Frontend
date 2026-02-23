@@ -36,24 +36,29 @@
 /* Si usas la versión 2.0 de Quill, asegúrate de que no falte la base */
 @import 'quill/dist/quill.core.css';
 
+$dark-bg: #1f2937;    /* Fondo oscuro del header */
+$cyan-fixed: #00e5bc; /* El cian vibrante de la imagen */
+$blue-fixed: #2563eb; /* El azul para botones */
+$white: #ffffff;
+
 
 .toast-success, .toast-error, .toast-warning, .toast-info {
   /* Fondo casi blanco y texto gris muy oscuro para todos */
-  --mdc-snackbar-container-color: #ffffff; 
-  --mdc-snackbar-supporting-text-color: #1a1a1a; 
-  
+  --mdc-snackbar-container-color: #ffffff;
+  --mdc-snackbar-supporting-text-color: #1a1a1a;
+
   /* Un borde fino y una sombra sutil para que flote sobre el fondo blanco */
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
 
-  .mat-mdc-snack-bar-action { 
-    color: #000000 !important; 
+  .mat-mdc-snack-bar-action {
+    color: #000000 !important;
     font-weight: 700;
   }
 }
 
-/* Opcional: Si quieres un detalle mínimo para diferenciarlas sin "chillar" 
+/* Opcional: Si quieres un detalle mínimo para diferenciarlas sin "chillar"
    puedes dejar una pequeña línea lateral del color del tipo de alerta */
 
 .toast-success { border-left: 4px solid #2e7d32; }

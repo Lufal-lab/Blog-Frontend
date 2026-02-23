@@ -7,42 +7,55 @@ describe('CommentCardComponent', () => {
   let component: CommentCardComponent;
   let fixture: ComponentFixture<CommentCardComponent>;
 
+  // Mock de un comentario
   const mockComment: Comment = {
     id: 1,
     content: 'Test comment',
-    created_at: '2024-01-01',
+    created_at: '2024-01-01T12:00:00Z',
     user_email: 'test@example.com'
   } as Comment;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [CommentCardComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA] // por si usas Material en el HTML
+      schemas: [CUSTOM_ELEMENTS_SCHEMA] // evita errores si usas Material en HTML
     }).compileComponents();
 
     fixture = TestBed.createComponent(CommentCardComponent);
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
+  afterEach(() => {
+    // Limpiar inputs entre tests
+    component.comment = undefined!;
+  });
+
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should accept comment input', () => {
-    component.comment = mockComment;
-    expect(component.comment).toEqual(mockComment);
+  describe('Input binding', () => {
+    it('should accept comment input', () => {
+      component.comment = mockComment;
+      expect(component.comment).toEqual(mockComment);
+    });
   });
 
-  it('should render content, user email and formatted date', () => {
-    component.comment = mockComment;
-    fixture.detectChanges();
+  describe('Template rendering', () => {
+    it('should render comment content, user email, and date', () => {
+      component.comment = mockComment;
+      fixture.detectChanges();
 
-    const compiled = fixture.nativeElement as HTMLElement;
+      const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.textContent).toContain('Test comment');
-    expect(compiled.textContent).toContain('test@example.com');
+      // Contenido del comentario
+      expect(compiled.textContent).toContain(mockComment.content);
 
-    // Solo validamos que contenga el año o parte visible
-    expect(compiled.textContent).toContain('2024');
+      // Email del usuario
+      expect(compiled.textContent).toContain(mockComment.user_email);
+
+      // Fecha: validamos que contenga el año o parte visible
+      expect(compiled.textContent).toContain('2024');
+    });
   });
 });

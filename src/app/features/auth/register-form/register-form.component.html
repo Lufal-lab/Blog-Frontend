@@ -59,13 +59,14 @@
         <mat-label>Confirm Password</mat-label>
         <input matInput type="password" formControlName="confirmPassword">
 
-        <mat-error *ngIf="form.hasError('passwordMismatch')">
-          Passwords do not match
-        </mat-error>
-
         <mat-error *ngIf="form.get('confirmPassword')?.hasError('required')">
           Password is required
         </mat-error>
+
+        <mat-error *ngIf="form.get('confirmPassword')?.hasError('passwordMismatch')">
+          Passwords do not match
+        </mat-error>
+
       </mat-form-field>
 
       <div class="actions">
@@ -86,5 +87,5 @@
   </mat-card>
 
   </div>
-  
+
 </div>

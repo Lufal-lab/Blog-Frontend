@@ -1,89 +1,97 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent
-} from '@angular/common/http';
+import { HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { of } from 'rxjs';
-
 import { AuthInterceptor } from './auth.interceptor';
 
 describe('AuthInterceptor', () => {
-
   let interceptor: AuthInterceptor;
   let httpHandlerSpy: jasmine.SpyObj<HttpHandler>;
 
-  beforeEach(() => {
+  // Función para limpiar cookies
+  function clearCookies() {
+    document.cookie.split(';').forEach(c => {
+      const name = c.split('=')[0].trim();
+      document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;';
+    });
+  }
 
+  beforeEach(() => {
+    // Crear spy de HttpHandler
     httpHandlerSpy = jasmine.createSpyObj('HttpHandler', ['handle']);
 
+    // Configurar módulo de testing
     TestBed.configureTestingModule({
       providers: [AuthInterceptor]
     });
 
     interceptor = TestBed.inject(AuthInterceptor);
+
+    // Limpiar cookies antes de cada test
+    clearCookies();
   });
 
   afterEach(() => {
     // Limpiar cookies después de cada test
-    document.cookie = 'csrftoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    clearCookies();
   });
 
-  it('should add X-CSRFToken header for POST when cookie exists', () => {
-
-    document.cookie = 'csrftoken=test-token';
-
-    const request = new HttpRequest('POST', '/test', {});
-
-    httpHandlerSpy.handle.and.returnValue(of({} as HttpEvent<unknown>));
-
-    interceptor.intercept(request, httpHandlerSpy);
-
-    const handledRequest = httpHandlerSpy.handle.calls.mostRecent().args[0];
-
-    expect(handledRequest.headers.get('X-CSRFToken')).toBe('test-token');
-    expect(handledRequest.withCredentials).toBeTrue();
+  it('should be created', () => {
+    expect(interceptor).toBeTruthy();
   });
 
-  it('should not add X-CSRFToken header if cookie does not exist', () => {
+  describe('CSRF header', () => {
 
-    const request = new HttpRequest('POST', '/test', {});
+    it('should add X-CSRFToken for POST if cookie exists', () => {
+      document.cookie = 'csrftoken=test-token';
 
-    httpHandlerSpy.handle.and.returnValue(of({} as HttpEvent<unknown>));
+      const req = new HttpRequest<any>('POST' as any, '/test');
 
-    interceptor.intercept(request, httpHandlerSpy);
+      httpHandlerSpy.handle.and.returnValue(of({} as HttpEvent<unknown>));
 
-    const handledRequest = httpHandlerSpy.handle.calls.mostRecent().args[0];
+      interceptor.intercept(req, httpHandlerSpy);
 
-    expect(handledRequest.headers.has('X-CSRFToken')).toBeFalse();
-    expect(handledRequest.withCredentials).toBeTrue();
+      const handledReq = httpHandlerSpy.handle.calls.mostRecent().args[0];
+      expect(handledReq.headers.get('X-CSRFToken')).toBe('test-token');
+      expect(handledReq.withCredentials).toBeTrue();
+    });
+
+    it('should not add X-CSRFToken if cookie missing', () => {
+      const req = new HttpRequest<any>('POST' as any, '/test');
+
+      httpHandlerSpy.handle.and.returnValue(of({} as HttpEvent<unknown>));
+
+      interceptor.intercept(req, httpHandlerSpy);
+
+      const handledReq = httpHandlerSpy.handle.calls.mostRecent().args[0];
+      expect(handledReq.headers.get('X-CSRFToken')).toBeNull();
+      expect(handledReq.withCredentials).toBeTrue();
+    });
+
+    it('should not add X-CSRFToken for GET requests', () => {
+      document.cookie = 'csrftoken=test-token';
+
+      const req = new HttpRequest<any>('GET', '/test');
+
+      httpHandlerSpy.handle.and.returnValue(of({} as HttpEvent<unknown>));
+
+      interceptor.intercept(req, httpHandlerSpy);
+
+      const handledReq = httpHandlerSpy.handle.calls.mostRecent().args[0];
+      expect(handledReq.headers.get('X-CSRFToken')).toBeNull();
+      expect(handledReq.withCredentials).toBeTrue();
+    });
   });
 
-  it('should not add X-CSRFToken header for GET requests', () => {
+  describe('Next handler', () => {
+    it('should always call next.handle', () => {
+      const req = new HttpRequest<any>('GET', '/test');
 
-    document.cookie = 'csrftoken=test-token';
+      httpHandlerSpy.handle.and.returnValue(of({} as HttpEvent<unknown>));
 
-    const request = new HttpRequest('GET', '/test');
+      interceptor.intercept(req, httpHandlerSpy);
 
-    httpHandlerSpy.handle.and.returnValue(of({} as HttpEvent<unknown>));
-
-    interceptor.intercept(request, httpHandlerSpy);
-
-    const handledRequest = httpHandlerSpy.handle.calls.mostRecent().args[0];
-
-    expect(handledRequest.headers.has('X-CSRFToken')).toBeFalse();
-    expect(handledRequest.withCredentials).toBeTrue();
-  });
-
-  it('should always call next.handle', () => {
-
-    const request = new HttpRequest('GET', '/test');
-
-    httpHandlerSpy.handle.and.returnValue(of({} as HttpEvent<unknown>));
-
-    interceptor.intercept(request, httpHandlerSpy);
-
-    expect(httpHandlerSpy.handle).toHaveBeenCalled();
+      expect(httpHandlerSpy.handle).toHaveBeenCalled();
+    });
   });
 
 });

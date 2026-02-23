@@ -4,12 +4,14 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { PostsService } from '../../services/posts.service';
 import { LikesService } from '../../services/likes.service';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { of, throwError } from 'rxjs';
 import { Post } from 'src/app/core/models/post.model';
 import { PrivacyLevel } from 'src/app/core/models/privacy-level.enum';
 import { User } from 'src/app/core/models/user.model';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { AlertService } from 'src/app/core/services/alert.service';
 
 describe('PostCardComponent', () => {
   let component: PostCardComponent;
@@ -20,6 +22,7 @@ describe('PostCardComponent', () => {
   let likesServiceSpy: jasmine.SpyObj<LikesService>;
   let routerSpy: jasmine.SpyObj<Router>;
   let dialogSpy: jasmine.SpyObj<MatDialog>;
+  let matSnackBarSpy: jasmine.SpyObj<MatSnackBar>;
 
   const dummyUser: User = {
     id: 1,
@@ -52,9 +55,18 @@ describe('PostCardComponent', () => {
     likesServiceSpy = jasmine.createSpyObj('LikesService', ['addLike', 'removeLike']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+    matSnackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
 
+    // AuthService
     authServiceSpy.authStatus.and.returnValue(of(true));
     authServiceSpy.currentUser.and.returnValue(of(dummyUser));
+
+    // Mock de MatDialogRef
+    const matDialogRefSpyObj: Partial<MatDialogRef<any>> = {
+      afterClosed: () => of(true)
+    };
+
+    dialogSpy.open.and.returnValue(matDialogRefSpyObj as MatDialogRef<any>);
 
     await TestBed.configureTestingModule({
       declarations: [PostCardComponent],
@@ -63,7 +75,9 @@ describe('PostCardComponent', () => {
         { provide: PostsService, useValue: postsServiceSpy },
         { provide: LikesService, useValue: likesServiceSpy },
         { provide: Router, useValue: routerSpy },
-        { provide: MatDialog, useValue: dialogSpy }
+        { provide: MatDialog, useValue: dialogSpy },
+        { provide: MatSnackBar, useValue: matSnackBarSpy },
+        AlertService
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
@@ -136,25 +150,27 @@ describe('PostCardComponent', () => {
   }));
 
   it('deletePost should emit postDeleted on confirm', fakeAsync(() => {
-    spyOn(window, 'confirm').and.returnValue(true);
+    // Mock AlertService.confirm para devolver true
+    spyOn(TestBed.inject(AlertService), 'confirm').and.returnValue(Promise.resolve(true));
     postsServiceSpy.deletePost.and.returnValue(of(void 0));
     spyOn(component.postDeleted, 'emit');
 
-    component.deletePost();
+    component.onDeletePost();
     tick();
 
     expect(postsServiceSpy.deletePost).toHaveBeenCalledWith(dummyPost.id);
     expect(component.postDeleted.emit).toHaveBeenCalledWith(dummyPost.id);
   }));
 
-  it('deletePost should not emit if confirm is false', () => {
-    spyOn(window, 'confirm').and.returnValue(false);
+  it('deletePost should not emit if confirm is false', fakeAsync(() => {
+    // Mock AlertService.confirm para devolver false
+    spyOn(TestBed.inject(AlertService), 'confirm').and.returnValue(Promise.resolve(false));
     spyOn(component.postDeleted, 'emit');
 
-    component.deletePost();
+    component.onDeletePost();
+    tick();
 
     expect(postsServiceSpy.deletePost).not.toHaveBeenCalled();
     expect(component.postDeleted.emit).not.toHaveBeenCalled();
-  });
-
+  }));
 });

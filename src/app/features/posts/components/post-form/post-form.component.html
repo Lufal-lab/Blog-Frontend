@@ -1,11 +1,15 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="post-form-container">
-  
+
   <div class="header-row">
     <label class="field-label">Title: </label>
     <mat-form-field appearance="outline" class="full-width">
       <input matInput formControlName="title" placeholder="Write the title" />
-      <mat-error *ngIf="form.get('title')?.invalid">
+      <mat-error *ngIf="form.get('title')?.invalid  && form.get('title')?.touched">
         Title is required
+      </mat-error>
+
+      <mat-error *ngIf="form.get('title')?.hasError('whitespace') && form.get('title')?.touched">
+        Title cannot be empty spaces
       </mat-error>
     </mat-form-field>
   </div>
@@ -16,50 +20,23 @@
   <div class="main-editor-card">
 
 
-    <quill-editor formControlName="content" theme="snow" class="styled-editor">
-      <div quill-editor-toolbar>
-        <span class="ql-formats">
-          <button class="ql-bold"></button>
-          <button class="ql-italic"></button>
-          <button class="ql-underline"></button>
-        </span>
-        <span class="ql-formats">
-          <button class="ql-align" value=""></button>
-          <button class="ql-align" value="center"></button>
-          <button class="ql-align" value="right"></button>
-          <button class="ql-align" value="justify"></button>
-        </span>
-        <span class="ql-formats">
-          <button class="ql-list" value="ordered"></button>
-          <button class="ql-list" value="bullet"></button>
-        </span>
-        <span class="ql-formats">
-          <select class="ql-header">
-            <option selected></option>
-            <option value="1"></option>
-            <option value="2"></option>
-          </select>
-        </span>
-        <span class="ql-formats">
-          <button class="ql-color"></button>
-          <button class="ql-image"></button>
-          <button class="ql-link"></button>
-          <button class="ql-code"></button>
-          <button class="ql-code-block"></button>
-          <button class="ql-clean"></button>
-        </span>
-      </div>
-    </quill-editor>
+    <!-- <quill-editor formControlName="content" [modules]="quillConfig" theme="snow" class="styled-editor">
+    </quill-editor> -->
+    <input formControlName="content" />
 
-  <mat-error *ngIf="form.get('content')?.invalid">
+  <mat-error *ngIf="form.get('content')?.invalid && form.get('content')?.touched">
     Content is required
+  </mat-error>
+
+  <mat-error *ngIf="form.get('content')?.hasError('whitespace') && form.get('content')?.touched">
+    Content cannot be empty spaces
   </mat-error>
 </div>
 
 <div class="permissions-container">
   <fieldset class="permissions-fieldset">
     <legend class="permissions-legend">Permissions</legend>
-    
+
     <div class="permissions-grid">
       <div class="grid-header">Category</div>
       <div class="grid-header">Access</div>

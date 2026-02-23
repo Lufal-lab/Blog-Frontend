@@ -29,25 +29,32 @@ describe('CommentFormComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  afterEach(() => {
+    // Limpiar el contenido entre tests
+    component.content = '';
+  });
+
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit content and reset when submit is called', () => {
-    spyOn(component.onSubmit, 'emit');
+  describe('Submit functionality', () => {
+    it('should emit content and reset when submit is called', () => {
+      spyOn(component.onSubmit, 'emit');
 
-    component.content = 'Test comment';
-    component.submit();
+      component.content = 'Test comment';
+      component.submit();
 
-    expect(component.onSubmit.emit).toHaveBeenCalledWith('Test comment');
-    expect(component.content).toBe('');
+      expect(component.onSubmit.emit).toHaveBeenCalledWith('Test comment');
+      expect(component.content).toBe('');
+    });
   });
 
-  it('should reset content when cancel is called', () => {
-    component.content = 'Some content';
-
-    component.cancel();
-
-    expect(component.content).toBe('');
+  describe('Cancel functionality', () => {
+    it('should reset content when cancel is called', () => {
+      component.content = 'Some content';
+      component.cancel();
+      expect(component.content).toBe('');
+    });
   });
 });

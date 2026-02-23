@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostsService } from '../../services/posts.service';
 
+import { AlertService } from 'src/app/core/services/alert.service';
+
 @Component({
   selector: 'app-post-edit',
   templateUrl: './post-edit.component.html',
-  styleUrls: ['./post-edit.component.scss'] 
+  styleUrls: ['./post-edit.component.scss']
 })
 export class PostEditComponent implements OnInit {
 
@@ -14,7 +16,8 @@ export class PostEditComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private postsService: PostsService,
-    private router: Router
+    private router: Router,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -30,11 +33,14 @@ export class PostEditComponent implements OnInit {
   updatePost(payload: any) {
     this.postsService.updatePost(this.post.id, payload).subscribe({
       next: (updated) => {
-        this.router.navigate(['/posts']);
+
+        this.alertService.success('Post updated successfully!');
+        this.router.navigate(['/posts', this.post.id]);
       },
-      error: () => {
-        alert('Error updating post');
-      }
+      // error: (err) => {
+      //   const message = err?.error?.message || 'Error updating post';
+      //   this.alertService.error(message);
+      // }
     });
   }
 

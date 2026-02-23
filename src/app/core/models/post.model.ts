@@ -5,6 +5,7 @@ export interface Post {
   author : number;
   author_email: string;
   author_team: string;
+  teamColor?: string;
   title: string;
   content: string;
   excerpt: string;

@@ -1,113 +1,128 @@
 <mat-card class="post-card">
+  <div class="mobile">
 
-  <!-- HEADER -->
-<div class="header-row">
+      <div class="header-row">
 
-  <div class="title-section">
+    <div class="left-section">
 
-    <h2 class="post-title">
-      {{ post.title }}
-    </h2>
+      <div class="title-section">
+        <div class="privacy-row">
+          <span class="privacy-badge read">
+            Read: {{ post.privacy_read }}
+          </span>
 
-    <div class="title-actions" *ngIf="isLoggedIn$ | async">
-      <button *ngIf="canEdit"
-        mat-icon-button
-        class="action-btn"
-        (click)="editPost()">
-        <mat-icon>edit</mat-icon>
-      </button>
+          <span class="privacy-badge write">
+            Write: {{ post.privacy_write }}
+          </span>
+        </div>
 
-      <button *ngIf="canEdit"
-        mat-icon-button
-        class="action-btn"
-        (click)="onDeletePost()">
-        <mat-icon>delete</mat-icon>
-      </button>
+        <h2 class="post-title">
+          {{ post.title }}
+        </h2>
+
+      </div>
+
+      <div class="card header-meta">
+        <div class="meta-top">
+
+          <span class="author-name">
+            {{ post.author_email }}
+          </span>
+
+          <span class="team-badge"
+          [style.background-color]="post.teamColor">
+            Team {{ post.author_team }}
+          </span>
+        </div>
+
+        <span class="meta-info">
+          {{ post.created_at | date:'medium' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="right-section">
+      <div class="text-content">
+        <div class="post-excerpt">
+          <p>
+            <span [innerHTML]="post.excerpt | slice:0:250"></span>
+            <ng-container *ngIf="post.content.length > 250">
+              <a class="show-more" (click)="openPost()">Show more</a>
+            </ng-container>
+            <span></span>
+          </p>
+
+        </div>
+    <!-- STATS + ACTIONS -->
+    <div class="post-actions-row">
+
+      <div class="buttons" *ngIf="isLoggedIn$ | async">
+
+        <button
+          mat-icon-button
+          class="action-btn"
+          [class.liked]="post.is_liked"
+          (click)="toggleLike()">
+
+          <mat-icon>
+            {{ post.is_liked ? 'favorite' : 'favorite_border' }}
+          </mat-icon>
+
+        </button>
+
+        <button
+          mat-icon-button
+          class="action-btn"
+          (click)="openPost()">
+          <mat-icon>chat_bubble_outline</mat-icon>
+        </button>
+
+      </div>
+
+        <div class="counts">
+        <span class="clickable" (click)="openLikes()">
+          {{ post.likes_count }} Likes
+        </span>
+
+        <span class="clickable" (click)="openPost()">
+          {{ post.comments_count }} Comments
+        </span>
+      </div>
+
+      </div>
+
+    <!-- EXCERPT -->
+
+
+      </div>
+
 
     </div>
 
-  </div>
 
-  <div class="header-meta">
 
-    <span class="team-badge">
-      Team {{ post.author_team }}
-    </span>
 
-    <span class="author-name">
-      {{ post.author_email }}
-    </span>
-
-    <span class="meta-info">
-      {{ post.created_at | date:'medium' }}
-    </span>
 
   </div>
 
-</div>
+          <div class="card title-actions" *ngIf="isLoggedIn$ | async">
+        <button *ngIf="canEdit"
+          mat-icon-button
+          class="action-btn-edit"
+          (click)="editPost()">
+          <mat-icon>edit</mat-icon>
+        </button>
 
-  <!-- EXCERPT -->
-  <div class="post-excerpt">
-    <p>
-      {{ post.excerpt | slice:0:250 }}
-      <ng-container *ngIf="post.content.length > 250">
-        ...
-        <a class="show-more" (click)="openPost()">Show more</a>
-      </ng-container>
-    </p>
-  </div>
+        <button *ngIf="canEdit"
+          mat-icon-button
+          class="action-btn-edit"
+          (click)="onDeletePost()">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
 
-
-  <!-- STATS + ACTIONS -->
-  <div class="post-actions-row">
-
-    <!-- Left side: counts -->
-    <div class="counts">
-      <span class="clickable" (click)="openLikes()">
-        {{ post.likes_count }} Likes
-      </span>
-
-      <span class="clickable" (click)="openPost()">
-        {{ post.comments_count }} Comments
-      </span>
-    </div>
-
-    <!-- Right side: buttons -->
-    <div class="buttons" *ngIf="isLoggedIn$ | async">
-
-      <button
-        mat-icon-button
-        class="action-btn"
-        [class.liked]="post.is_liked"
-        (click)="toggleLike()">
-
-        <mat-icon>
-          {{ post.is_liked ? 'favorite' : 'favorite_border' }}
-        </mat-icon>
-
-      </button>
-
-      <button
-        mat-icon-button
-        class="action-btn"
-        (click)="openPost()">
-        <mat-icon>chat_bubble_outline</mat-icon>
-      </button>
-
-    </div>
 
   </div>
 
-
-  <!-- PRIVACY (TEMPORAL) -->
-  <div class="privacy-row">
-    <span class="privacy-badge read">
-      Read: {{ post.privacy_read }}
-    </span>
-
-    <span class="privacy-badge write">
-      Write: {{ post.privacy_write }}
-    </span>
-  </div>
 
 </mat-card>
