@@ -33,7 +33,22 @@
         subscriptSizing="dynamic"
       >
         <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password">
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hidePassword = !hidePassword"
+            [attr.aria-label]="'Toggle password visibility'">
+            <mat-icon>
+              {{ hidePassword ? 'visibility_off' : 'visibility' }}
+            </mat-icon>
+          </button>
+
+        <!-- Solo espacios -->
+        <!-- <mat-error *ngIf="form.get('password')?.hasError('whitespace')">
+          The password cannot be empty or contain only spaces.
+        </mat-error> -->
 
         <mat-error *ngIf="form.get('password')?.hasError('required')">
           Password is required
@@ -57,7 +72,17 @@
         subscriptSizing="dynamic"
       >
         <mat-label>Confirm Password</mat-label>
-        <input matInput type="password" formControlName="confirmPassword">
+        <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword">
+        <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hideConfirmPassword = !hideConfirmPassword"
+            [attr.aria-label]="'Toggle Confirmpassword visibility'">
+            <mat-icon>
+              {{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}
+            </mat-icon>
+          </button>
 
         <mat-error *ngIf="form.get('confirmPassword')?.hasError('required')">
           Password is required

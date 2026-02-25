@@ -6,59 +6,69 @@
         Back
       </button>
     </div>
-    <div class="header-row">
-      <div class="title-section">
-        <h2 class="post-title">{{ post.title }}</h2>
+
+    <div *ngIf="post; else noPost">
+
+      <div class="card title-actions" *ngIf="isLoggedIn$ | async">
+        <button *ngIf="canEdit" mat-icon-button class="action-btn-edit" (click)="editPost()">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button *ngIf="canEdit" mat-icon-button class="action-btn-edit" (click)="onDeletePost()">
+          <mat-icon>delete</mat-icon>
+        </button>
       </div>
 
-      <div class="header-meta">
-        <span class="team-badge"
-        [style.background-color]="post.teamColor">Team {{ post.author_team }}</span>
-        <span class="author-name">{{ post.author_email }}</span>
-        <span class="meta-info">{{ post.created_at | date:'medium' }}</span>
+      <div class="header-row">
+        <div class="title-section">
+          <h2 class="post-title">{{ post.title }}</h2>
+        </div>
+
+        <div class="header-meta">
+          <span class="team-badge" [style.background-color]="post.teamColor">
+            Team {{ post.author_team }}
+          </span>
+          <span class="author-name">{{ post.author_email }}</span>
+          <span class="meta-info">{{ post.created_at | date:'medium' }}</span>
+        </div>
       </div>
-    </div>
 
-    <div class="post-content-box">
-      <!-- <span [innerHTML]="post.excerpt | slice:0:250"></span>
-      <p>{{ post.content }}</p> -->
-      <p [innerHTML]="post.content"></p>
-    </div>
+      <div class="post-content-box">
+        <p class="post-excerpt" [innerHTML]="safeContent"></p>
+      </div>
 
-    <div class="likes-summary">
+      <div class="likes-summary">
         <span>{{ post.likes_count }} LIKES</span>
-    </div>
-
-
-    <div class="comments-section">
-      <h3 class="section-title">Comments</h3>
-
-      <div *ngIf="loadingComments" class="text-center">Loading comments...</div>
-
-      <app-comment-card
-      *ngFor="let comment of comments"
-      [comment]="comment">
-      </app-comment-card>
-
-
-      <app-pagination
-        [next]="pagination.next"
-        [previous]="pagination.previous"
-        [pageSize]="pageSize"
-        [totalItems]="totalComments"
-        [currentPage]="currentPage"
-        (nextPage)="loadNextComments()"
-        (previousPage)="loadPreviousComments()"
-      ></app-pagination>
-
-      <div *ngIf="isLoggedIn$ | async" class="new-comment-box">
-        <h4 class="form-title">Add New Comment:</h4>
-        <app-comment-form (onSubmit)="handleCommentSubmit($event)"></app-comment-form>
       </div>
-    </div>
 
+      <div class="comments-section">
+        <h3 class="section-title">Comments</h3>
+
+        <div *ngIf="loadingComments" class="text-center">Loading comments...</div>
+
+        <app-comment-card *ngFor="let comment of comments" [comment]="comment"></app-comment-card>
+
+        <app-pagination
+          [next]="pagination.next"
+          [previous]="pagination.previous"
+          [pageSize]="pageSize"
+          [totalItems]="totalComments"
+          [currentPage]="currentPage"
+          (nextPage)="loadNextComments()"
+          (previousPage)="loadPreviousComments()"
+        ></app-pagination>
+
+        <div *ngIf="isLoggedIn$ | async" class="new-comment-box">
+          <h4 class="form-title">Add New Comment:</h4>
+          <app-comment-form (onSubmit)="handleCommentSubmit($event)"></app-comment-form>
+        </div>
+      </div>
+
+    </div> <ng-template #noPost>
+      <div style="padding: 2rem; text-align: center;">
+        <p>The post could not be loaded or you do not have permissions to view it.</p>
+      </div>
+    </ng-template>
 
   </mat-card>
-
 </div>
-

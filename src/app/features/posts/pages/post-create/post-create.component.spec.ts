@@ -1,90 +1,69 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { PostFormComponent } from '../../components/post-form/post-form.component';
-import { PrivacyLevel } from 'src/app/core/models/privacy-level.enum';
+import { PostCreateComponent } from './post-create.component';
+import { PostsService } from '../../services/posts.service';
+import { Router } from '@angular/router';
+import { AlertService } from 'src/app/core/services/alert.service';
+import { of } from 'rxjs';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
-describe('PostFormComponent', () => {
-  let component: PostFormComponent;
-  let fixture: ComponentFixture<PostFormComponent>;
-
-  // ----- MOCKS -----
-  // Mapeo de PrivacyLevel a PermissionOption
-  const privacyToPermission = {
-    [PrivacyLevel.PUBLIC]: 'none',
-    [PrivacyLevel.AUTHENTICATED]: 'read_only',
-    [PrivacyLevel.TEAM]: 'read_write',
-    [PrivacyLevel.AUTHOR]: 'read_write'
-  } as const;
-
-  const initialDataMock = {
-    title: 'Test Post',
-    content: 'Test Content',
-    privacy_read: PrivacyLevel.AUTHENTICATED,
-    privacy_write: PrivacyLevel.TEAM
-  };
+describe('PostCreateComponent', () => {
+  let component: PostCreateComponent;
+  let fixture: ComponentFixture<PostCreateComponent>;
+  let mockPostsService: any;
+  let mockRouter: any;
+  let mockAlertService: any;
 
   beforeEach(async () => {
+
+    mockPostsService = {
+      createPost: jasmine.createSpy('createPost').and.returnValue(of({
+        id: 1,
+        title: 'Test Post'
+      }))
+    };
+
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
+
+    mockAlertService = {
+      success: jasmine.createSpy('success')
+    };
+
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [PostFormComponent],
-      schemas: [NO_ERRORS_SCHEMA] // evita errores por componentes hijos
+      declarations: [PostCreateComponent],
+      providers: [
+        { provide: PostsService, useValue: mockPostsService },
+        { provide: Router, useValue: mockRouter },
+        { provide: AlertService, useValue: mockAlertService }
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA] // por si el template tiene app-post-form
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PostFormComponent);
+    fixture = TestBed.createComponent(PostCreateComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  it('should create the component', () => {
-    fixture.detectChanges();
+  it('should create component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load initial data into the form', () => {
-    component.initialData = initialDataMock;
-    fixture.detectChanges();
+  it('should call createPost and navigate on success', () => {
+    const payload = { title: 'New Post' };
 
-    expect(component.form.get('title')?.value).toBe(initialDataMock.title);
-    expect(component.form.get('content')?.value).toBe(initialDataMock.content);
+    component.createPost(payload);
 
-    // mapear a PermissionOption
-    expect(component.form.get('public')?.value).toBe(privacyToPermission[initialDataMock.privacy_read]);
-    expect(component.form.get('team')?.value).toBe(privacyToPermission[initialDataMock.privacy_write]);
+    expect(mockPostsService.createPost).toHaveBeenCalledWith(payload);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/posts']);
+    expect(mockAlertService.success)
+      .toHaveBeenCalledWith('Post published successfully!');
   });
 
-  it('should build correct payload on submit', () => {
-    fixture.detectChanges();
+  it('should navigate back when goBack is called', () => {
+    component.goBack();
 
-    // patchValue usando los valores que espera el formulario
-    component.form.patchValue({
-      title: 'New Title',
-      content: 'New Content',
-      public: 'none',          // PermissionOption
-      authenticated: 'read_only',
-      team: 'read_write'
-    });
-
-    let emittedPayload: any;
-    component.submitForm.subscribe(payload => emittedPayload = payload);
-
-    component.onSubmit();
-
-    expect(emittedPayload).toEqual({
-      title: 'New Title',
-      content: 'New Content',
-      privacy_read: PrivacyLevel.AUTHENTICATED, // mapped en onSubmit
-      privacy_write: PrivacyLevel.TEAM
-    });
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/posts']);
   });
 
-  it('should not submit if form is invalid', () => {
-    fixture.detectChanges();
-    component.form.patchValue({ title: '', content: '' });
-
-    let emitted = false;
-    component.submitForm.subscribe(() => emitted = true);
-
-    component.onSubmit();
-    expect(emitted).toBeFalse();
-  });
 });

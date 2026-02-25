@@ -38,6 +38,14 @@ $white: #ffffff;
   }
 }
 
+.post-excerpt,
+.title-section{
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+
+
 .header-meta {
   display: flex;
   align-items: center;

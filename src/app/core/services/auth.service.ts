@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, filter } from 'rxjs/operators';
 
 import { AuthCredentials, User } from '../models/user.model';
 
@@ -16,7 +16,7 @@ export class AuthService {
   // BehaviorSubjects: Guardan el estado actual y lo emiten a quien se suscriba,
   // Se usa en header o con el boton crear posts para saber en tiempo real si hay alguien logueado
   // Variale con memoria si ya se cargo algo esto entrega el ultimo valor conocido
-  private isLoggedIn$ = new BehaviorSubject<boolean>(false);
+  private isLoggedIn$ = new BehaviorSubject<boolean | null>(null);
   private currentUser$ = new BehaviorSubject<User | null>(null);
 
   //Se ejecuta de primero o apenas se recarga el documento
@@ -41,21 +41,31 @@ export class AuthService {
     );
     }
 
-  logout(): Observable<void> {
-    return this.http.post<void>(
-      `${this.apiUrl}logout/`,
-      {},
-      {
-        withCredentials: true
-      }
-    )
-    .pipe(
-      tap(() => {
-        this.isLoggedIn$.next(false);
-        this.currentUser$.next(null);
-      }
-      )
-    );
+    logout(): void {
+
+  // logout(): Observable<void> {
+    // return this.http.post<void>(
+    //   `${this.apiUrl}logout/`,
+    //   {},
+    //   {
+    //     withCredentials: true
+    //   }
+    // )
+    // .pipe(
+    //   tap(() => {
+    //     this.isLoggedIn$.next(false);
+    //     this.currentUser$.next(null);
+    //   }
+    //   )
+    // );
+
+    // 1. Limpiamos el frontend de inmediato, sin preguntar
+    this.isLoggedIn$.next(false);
+    this.currentUser$.next(null);
+
+    // 2. Le avisamos al backend en segundo plano y silenciamos cualquier error
+    this.http.post(`${this.apiUrl}logout/`, {}, { withCredentials: true })
+      .subscribe({ error: () => {} });
   }
 
     createUser(data: AuthCredentials): Observable<User> {
@@ -92,17 +102,19 @@ export class AuthService {
   //  generalmente el estado de logue y el usuario
 
   authStatus(): Observable<boolean> {
-    return this.isLoggedIn$.asObservable();
+    return this.isLoggedIn$.pipe(
+      filter((status): status is boolean => status !== null)
+    );
   }
 
   currentUser(): Observable<User | null> {
     return this.currentUser$.asObservable();
   }
 
-  //Metodo sincronico se usa en el gurads
-    isAuthenticated(): boolean {
-    return this.isLoggedIn$.value;
-  }
+  // //Metodo sincronico se usa en el gurads
+  //   isAuthenticated(): boolean {
+  //   return this.isLoggedIn$.value;
+  // }
 
 }
 

@@ -8,6 +8,8 @@ import { PostsService } from '../../services/posts.service';
 import { CommentsService } from '../../services/comments.service';
 import { LikesService } from '../../services/likes.service';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
 
 describe('PostDetailComponent', () => {
   let component: PostDetailComponent;
@@ -35,7 +37,13 @@ describe('PostDetailComponent', () => {
     };
 
     authServiceMock = {
-      authStatus: jasmine.createSpy().and.returnValue(of(true))
+      authStatus: jasmine.createSpy().and.returnValue(of(true)),
+      currentUser: jasmine.createSpy().and.returnValue(of({
+        id: 1,
+        email: 'test@example.com',
+        is_superuser: false,
+        team: 'Dev'
+      }))
     };
 
     routerMock = {
@@ -43,6 +51,9 @@ describe('PostDetailComponent', () => {
     };
 
     await TestBed.configureTestingModule({
+      imports: [ MatSnackBarModule,
+        MatDialogModule
+      ],
       declarations: [PostDetailComponent],
       providers: [
         { provide: PostsService, useValue: postsServiceMock },

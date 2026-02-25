@@ -2,7 +2,7 @@
   padding: 1.5rem; // El margen al padre que pediste
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  // gap: 1rem;
 }
 
 .field-label {
@@ -25,6 +25,20 @@
 //     border-bottom: 1px solid #f1f1f1;
 //     font-weight: 600;
 //   }
+}
+
+.editor-errors {
+  margin-top: 2px;
+}
+
+.editor-errors {
+  font-size: 12px;
+  color: #f44336; // mismo rojo de mat-error
+}
+
+::ng-deep .ql-editor {
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 ::ng-deep .styled-editor {
@@ -81,27 +95,27 @@
 .permissions-grid {
   display: grid;
   /* Dos columnas iguales por defecto */
-  grid-template-columns: 1fr 1fr; 
-  gap: 1.5rem; 
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
   align-items: center;
 
   /* RESPONSIVE: Si la pantalla es pequeña (móvil), se vuelve una sola columna */
   @media (max-width: 40rem) {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
     gap: 1rem;
   }
 }
 
 /* 5. TÍTULOS DE COLUMNA (Category y Access) */
 .grid-header {
-  font-size: 1.1rem; 
+  font-size: 1.1rem;
   font-weight: 700;
   color: #666;
   margin-bottom: 0.5rem;
 
   /* Ocultar el segundo encabezado en móvil para que no se vea raro */
   @media (max-width: 40rem) {
-    &:nth-child(2) { display: none; } 
+    &:nth-child(2) { display: none; }
   }
 }
 
@@ -114,7 +128,7 @@
 
 .access-item {
   width: 100%;
-  
+
   .custom-select {
     width: 100%;
     max-width: 18rem; // Evita que crezca infinito en pantallas grandes

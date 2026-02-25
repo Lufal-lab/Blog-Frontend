@@ -18,20 +18,20 @@
       <span class="field-label">Content:</span>
     </div>
   <div class="main-editor-card">
+    <quill-editor formControlName="content" [modules]="quillConfig" theme="snow" class="styled-editor">
+    </quill-editor>
+    <!-- <input formControlName="content" /> -->
 
-
-    <!-- <quill-editor formControlName="content" [modules]="quillConfig" theme="snow" class="styled-editor">
-    </quill-editor> -->
-    <input formControlName="content" />
-
-  <mat-error *ngIf="form.get('content')?.invalid && form.get('content')?.touched">
-    Content is required
-  </mat-error>
-
-  <mat-error *ngIf="form.get('content')?.hasError('whitespace') && form.get('content')?.touched">
-    Content cannot be empty spaces
-  </mat-error>
 </div>
+    <div class="editor-errors">
+      <mat-error *ngIf="form.get('content')?.invalid && form.get('content')?.touched">
+        Content is required
+      </mat-error>
+
+      <mat-error *ngIf="form.get('content')?.hasError('whitespace') && form.get('content')?.touched">
+        Content cannot be empty spaces
+      </mat-error>
+    </div>
 
 <div class="permissions-container">
   <fieldset class="permissions-fieldset">

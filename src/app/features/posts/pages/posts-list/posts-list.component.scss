@@ -13,3 +13,33 @@
     border: 1px solid black;
   }
 }
+
+
+.state-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 60px 20px;
+  margin: 40px 0;
+
+  border-radius: 16px;
+  text-align: center;
+}
+
+.state-box mat-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.state-box.loading {
+  color: #555;
+}
+
+.state-box.error {
+  background: #fff4f4;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+

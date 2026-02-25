@@ -23,12 +23,19 @@ export class ErrorInterceptor implements HttpInterceptor {
         let errorMessage = 'An error occurred';
         const isLoginUrl = request.url.includes('/api/users/login/');
         const isCheckSessionUrl = request.url.includes('/api/users/me/');
+        const isLogoutUrl = request.url.includes('/api/users/logout/');
 
         // Caso 0: Servidor apagado o error de red
         if (error.status === 0) {
           errorMessage = 'Cannot connect to the server. Is the backend running?';
           this.alert.error(errorMessage);
         }
+
+        if (isLogoutUrl && (error.status === 401 || error.status === 403)) {
+          this.router.navigate(['/auth/login']);
+          return throwError(() => error);
+        }
+
         if ((error.status === 401 || error.status === 400) && isLoginUrl) {
           // Devolvemos el error al componente para que él lo maneje con su mensaje local
           return throwError(() => error);
@@ -56,10 +63,33 @@ export class ErrorInterceptor implements HttpInterceptor {
               this.alert.error('Internal server error.');
               break;
             default:
-              // Para errores 400 u otros, intentamos sacar el mensaje del back
-              const backMsg = error.error?.message || error.error?.detail || 'Unexpected error';
-              this.alert.error(backMsg);
-              break;
+            let backMsg = 'Unexpected error';
+
+
+            if (error.error && typeof error.error === 'object') {
+              const errors = error.error;
+
+              // Extraemos las llaves y sus mensajes
+              const extractedMessages = Object.keys(errors).map(key => {
+                const value = errors[key];
+                const cleanValue = Array.isArray(value) ? value.join(' ') : value;
+
+                // Formateamos para que diga "Campo: Mensaje"
+                // Capitalizamos la primera letra de la key (ej: title -> Title)
+                const formattedKey = key.charAt(0).toUpperCase() + key.slice(1);
+                return `${formattedKey}: ${cleanValue}`;
+              });
+
+              if (extractedMessages.length > 0) {
+                // Si hay varios campos con error, los separamos con un salto de línea o un pipe
+                backMsg = extractedMessages.join(' | ');
+              }
+            } else if (typeof error.error === 'string') {
+              backMsg = error.error;
+            }
+
+            this.alert.error(backMsg);
+            break;
           }
         }
 

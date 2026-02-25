@@ -14,6 +14,8 @@ import { LikesComponent } from '../likes/likes.component';
 import { LikesService } from '../../services/likes.service';
 import { PostsService } from '../../services/posts.service';
 
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 @Component({
   selector: 'app-post-card',
   templateUrl: './post-card.component.html',
@@ -23,6 +25,8 @@ export class PostCardComponent{
 
   @Input() post!: Post;
   @Output() postDeleted = new EventEmitter<number | string>();
+
+  safeContent!: SafeHtml;
 
   isLoggedIn$: Observable<boolean>;
   currentUser: User | null = null;
@@ -35,7 +39,8 @@ export class PostCardComponent{
     private dialog: MatDialog,
     private router: Router,
     private likesService: LikesService,
-    private postsService: PostsService
+    private postsService: PostsService,
+    private sanitizer: DomSanitizer
   ){
     this.isLoggedIn$ = this.authService.authStatus();
 
@@ -43,6 +48,14 @@ export class PostCardComponent{
       this.currentUser = user;
     });
   }
+
+  ngOnChanges(){
+    if (this.post?.content) {
+      this.safeContent = this.sanitizer.bypassSecurityTrustHtml(this.post.excerpt);
+    }
+
+  }
+
 
   openLikes(): void {
     this.dialog.open(LikesComponent, {
@@ -120,7 +133,7 @@ export class PostCardComponent{
   async onDeletePost(): Promise<void> {
     const confirmed = await this.alertService.confirm(
     'Delete Post',
-    'This action cannot be undone. Are you sure?',
+    'Are you sure you want to delete this post?',
     'Delete',
     'warn'
     );

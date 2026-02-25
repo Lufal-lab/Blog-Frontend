@@ -6,6 +6,8 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { AlertService } from 'src/app/core/services/alert.service';
 import { passwordMatchValidator } from 'src/app/shared/validators/password-match.validators';
 
+// import { noWhitespaceValidator } from 'src/app/shared/validators/no-with-space.validators';
+
 
 @Component({
   selector: 'app-register-form',
@@ -15,6 +17,9 @@ import { passwordMatchValidator } from 'src/app/shared/validators/password-match
 export class RegisterFormComponent {
 
   form!: FormGroup;
+
+    hidePassword = true;
+    hideConfirmPassword = true;
   // error: string | null = null;
 
   constructor(
@@ -68,7 +73,9 @@ export class RegisterFormComponent {
   private buildForm() {
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      password: ['', [Validators.required, Validators.minLength(8),
+        // noWhitespaceValidator
+      ]],
       confirmPassword: ['', [Validators.required]],
     }, {
       validators: passwordMatchValidator

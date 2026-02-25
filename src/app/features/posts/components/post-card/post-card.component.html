@@ -25,14 +25,16 @@
       <div class="card header-meta">
         <div class="meta-top">
 
-          <span class="author-name">
-            {{ post.author_email }}
-          </span>
-
           <span class="team-badge"
           [style.background-color]="post.teamColor">
             Team {{ post.author_team }}
           </span>
+
+          <span class="author-name">
+            {{ post.author_email }}
+          </span>
+
+
         </div>
 
         <span class="meta-info">
@@ -45,7 +47,8 @@
       <div class="text-content">
         <div class="post-excerpt">
           <p>
-            <span [innerHTML]="post.excerpt | slice:0:250"></span>
+            <span class="post-excerpt" [innerHTML]="safeContent"></span>
+            <!-- <span [innerHTML]="post.excerpt | slice:0:250"></span> -->
             <ng-container *ngIf="post.content.length > 250">
               <a class="show-more" (click)="openPost()">Show more</a>
             </ng-container>
@@ -79,14 +82,18 @@
 
       </div>
 
-        <div class="counts">
-        <span class="clickable" (click)="openLikes()">
-          {{ post.likes_count }} Likes
-        </span>
+      <div class="counts">
+        <div style="flex: 1; text-align: center;">
+          <span class="clickable" (click)="openLikes()">
+            {{ post.likes_count }} Likes
+          </span>
+        </div>
 
-        <span class="clickable" (click)="openPost()">
-          {{ post.comments_count }} Comments
-        </span>
+        <div style="flex: 1; text-align: center;">
+          <span class="clickable" (click)="openPost()">
+            {{ post.comments_count }} Comments
+          </span>
+        </div>
       </div>
 
       </div>
@@ -105,7 +112,7 @@
 
   </div>
 
-          <div class="card title-actions" *ngIf="isLoggedIn$ | async">
+      <div class="card title-actions" *ngIf="isLoggedIn$ | async">
         <button *ngIf="canEdit"
           mat-icon-button
           class="action-btn-edit"

@@ -8,6 +8,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { Post } from 'src/app/core/models/post.model';
 import { Paginated } from 'src/app/core/models/paginated.model';
 import { PrivacyLevel } from 'src/app/core/models/privacy-level.enum';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe('PostsComponent', () => {
   let component: PostsComponent;
@@ -22,6 +23,7 @@ describe('PostsComponent', () => {
     const auth = jasmine.createSpyObj('AuthService', ['authStatus']);
 
     await TestBed.configureTestingModule({
+      imports: [MatSnackBarModule],
       declarations: [PostsComponent],
       providers: [
         { provide: PostsService, useValue: postsSpy },
@@ -83,7 +85,7 @@ describe('PostsComponent', () => {
 
     component['loadPosts']();
 
-    expect(component.error).toBe('No se pudieron cargar los posts');
+    expect(component.error).toBe('We couldn’t connect to the server.');
     expect(component.loading).toBeFalse();
   });
 

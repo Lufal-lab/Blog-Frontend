@@ -26,17 +26,21 @@ export class HeaderComponent {
 
   async onLogout(){
     const confirmed = await this.alertService.confirm(
-    'Logout', 
-    'Are you sure you want to log out?', 
-    'Logout', 
+    'Logout',
+    'Are you sure you want to log out?',
+    'Logout',
     'primary'
   );
 
   if (confirmed) {
-    this.authService.logout().subscribe(() => {
-      this.router.navigate(['']);
-      this.alertService.success('Successfully logged out!');
-    });
+    // this.authService.logout().subscribe(() => {
+    //   this.router.navigate(['']);
+    //   this.alertService.success('Successfully logged out!');
+    // });
+
+    this.authService.logout(); // 👈 Llamas al servicio (ya te limpió los datos)
+    this.router.navigate(['']); // 👈 Te vas al inicio
+    this.alertService.success('Successfully logged out!');
   }
 
 

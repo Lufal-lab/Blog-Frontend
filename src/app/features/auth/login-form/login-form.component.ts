@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
+import { AlertService } from 'src/app/core/services/alert.service';
+
 import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
@@ -20,38 +22,14 @@ export class LoginFormComponent {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private alertService: AlertService
   ){
     this.buildForm();
   }
 
   login(event: Event){
     event.preventDefault();
-    // if (this.form.valid) {
-    //   const { email, password } = this.form.value;
-    //   this.authService.login({ email, password })
-    //     .subscribe({
-    //       next: () => {
-    //         this.error = null;
-    //         this.router.navigate(['/posts/']);
-    //       },
-    //       error: (error: HttpErrorResponse) => {
-    //       // 1. Error Local: Si el servidor responde 400 o 401, el problema son los datos
-    //       if (error.status === 400 || error.status === 401) {
-    //         this.error = 'User or password incorrect. Please try again.';
-    //       }
-    //       // 2. Error Global: Si es Status 0 o 500, el componente NO pone mensaje,
-    //       // porque el ErrorInterceptor ya sacó la alerta del AlertService automáticamente.
-    //       else {
-    //         this.error = null;
-    //       }}
-
-    //       // error: (error) => {
-    //       //   this.error = 'Authentication Error: Wrong username or password';
-    //       // }
-
-    //     })
-    // }
 
     if (this.form.invalid) {
       this.form.markAllAsTouched(); // Para mostrar errores visuales si el usuario da clic sin llenar
@@ -65,6 +43,8 @@ export class LoginFormComponent {
 
     this.authService.login(credentials).subscribe({
       next: () => {
+        this.alertService.success(
+              'Successful login');
         this.router.navigate(['/posts']);
       },
       error: (err: HttpErrorResponse) => {
@@ -89,6 +69,8 @@ export class LoginFormComponent {
     cancel() {
     this.router.navigate(['/']);
   }
+
+
 
 }
 

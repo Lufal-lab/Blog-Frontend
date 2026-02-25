@@ -146,7 +146,7 @@ describe('ErrorInterceptor', () => {
     interceptor.intercept(req, next).subscribe({
       error: err => {
         expect(err).toBe(error);
-        expect(alertService.error).toHaveBeenCalledWith('Invalid input');
+        expect(alertService.error).toHaveBeenCalledWith('Message: Invalid input');
       }
     });
   });

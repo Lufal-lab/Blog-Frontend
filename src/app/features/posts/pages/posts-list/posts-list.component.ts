@@ -52,7 +52,7 @@ export class PostsComponent implements OnInit {
   }
 
 
-  private loadPosts(): void {
+  loadPosts(): void {
     this.loading = true;
     this.error = null;
 
@@ -60,7 +60,7 @@ export class PostsComponent implements OnInit {
       next: (response: Paginated<Post>) =>
       this.setPostsResponse(response),
       error: () => {
-        this.error = 'No se pudieron cargar los posts';
+        this.error = 'We couldn’t connect to the server.';
         this.loading = false;
       }
     });

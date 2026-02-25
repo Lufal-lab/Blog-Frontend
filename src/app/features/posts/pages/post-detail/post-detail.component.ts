@@ -1,13 +1,20 @@
 import { Component, OnInit } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+import { Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostsService } from '../../services/posts.service';
 import { CommentsService } from '../../services/comments.service';
 import { LikesService } from '../../services/likes.service';
+import { User } from 'src/app/core/models/user.model';
 import { Post } from 'src/app/core/models/post.model';
 import { Comment } from 'src/app/core/models/comment.model';
 import { Paginated } from 'src/app/core/models/paginated.model';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { Observable } from 'rxjs';
+
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
+import { AlertService } from 'src/app/core/services/alert.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -16,8 +23,14 @@ import { Observable } from 'rxjs';
 })
 export class PostDetailComponent implements OnInit {
 
+  @Output() postDeleted = new EventEmitter<number | string>();
+
   post!: Post;
   postId!: number;
+
+  safeContent!: SafeHtml;
+
+  currentUser: User | null = null;
 
   comments: Comment[] = [];
   likesCount = 0;
@@ -45,23 +58,37 @@ export class PostDetailComponent implements OnInit {
     private postsService: PostsService,
     private commentsService: CommentsService,
     private likesService: LikesService,
-    private authService: AuthService
+    private authService: AuthService,
+    private sanitizer: DomSanitizer,
+    private alertService: AlertService,
   ){
     this.isLoggedIn$ = this.authService.authStatus();
   }
 
   ngOnInit(): void {
     this.postId = Number(this.route.snapshot.paramMap.get('id'));
+    this.authService.currentUser().subscribe(user => {
+      this.currentUser = user;
+    });
     this.loadPost();
     this.loadComments();
     this.loadLikes();
   }
+
+  //   ngOnChanges(){
+  //   if (this.post?.content) {
+  //     this.safeContent = this.sanitizer.bypassSecurityTrustHtml(this.post.content);
+  //   }
+  // }
 
   loadPost(): void {
     this.loadingPost = true;
     this.postsService.getPostById(this.postId).subscribe({
       next: post => {
         this.post = post;
+        if (this.post?.content) {
+          this.safeContent = this.sanitizer.bypassSecurityTrustHtml(this.post.content);
+        }
         this.loadingPost = false;
       },
       error: () => {
@@ -173,7 +200,58 @@ loadCommentsByPage(page: number): void {
     });
   }
 
+  editPost(): void {
+    this.router.navigate(['/posts', this.post.id, 'edit']);
+  }
+
+  async onDeletePost(): Promise<void> {
+    const confirmed = await this.alertService.confirm(
+    'Delete Post',
+    'Are you sure you want to delete this post?',
+    'Delete',
+    'warn'
+    );
+
+    if (!confirmed) return;
+
+    this.postsService.deletePost(this.post.id).subscribe(() => {
+      this.postDeleted.emit(this.post.id);
+      this.alertService.success('Post deleted');
+    });
+  }
+
   goBack(): void {
     this.router.navigate(['/posts']);
+  }
+
+  get canEdit(): boolean{
+
+    console.log(this.currentUser);
+    if(!this.currentUser) return false;
+
+    if(this.currentUser.is_superuser){
+      return true;
+    }
+
+    if (this.currentUser.email === this.post.author_email) {
+      return true;
+    }
+
+    if (
+      this.post.privacy_write === 'team'
+      // && this.post.author_team !== "Default"
+      &&
+      this.currentUser.team === this.post.author_team
+    ) {
+      return true;
+    }
+
+    if (
+      this.post.privacy_write === 'authenticated'
+    ){
+      return true
+    }
+
+    return false
   }
 }

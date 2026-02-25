@@ -6,6 +6,8 @@ import { PrivacyLevel } from 'src/app/core/models/privacy-level.enum';
 
 import { noWhitespaceValidator} from 'src/app/shared/validators/no-with-space.validators'
 
+import { Location } from '@angular/common';
+
 export type PermissionOption = 'none' | 'read_only' | 'read_write';
 type PermissionKeys = 'public' | 'authenticated' | 'team' | 'author';
 
@@ -24,19 +26,19 @@ export class PostFormComponent implements OnInit {
     ['bold', 'italic', 'underline', 'strike'],        // Negrita, cursiva, etc.
     ['blockquote', 'code-block'],                    // <--- ESTE ES EL CUADRO DE CÓDIGO
 
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],             // Títulos
+    // [{ header: [1, 2, 3, 4, 5, 6, false] }],             // Títulos
     [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    [{ 'script': 'sub'}, { 'script': 'super' }],      // Subíndice/Superíndice
+    // [{ 'script': 'sub'}, { 'script': 'super' }],      // Subíndice/Superíndice
     [{ 'indent': '-1'}, { 'indent': '+1' }],          // Sangría
-    [{ 'direction': 'rtl' }],                         // Dirección de texto
+    // [{ 'direction': 'rtl' }],                         // Dirección de texto
 
     [{ 'size': ['small', false, 'large', 'huge'] }],  // Tamaño de fuente
     [{ color: [] }, { background: [] }],
-    [{ 'font': [] }],
-    [{ 'align': [] }],
+    // [{ 'font': [] }],
+    // [{ 'align': [] }],
 
-    ['link', 'image', 'video'],                       // Multimedia
-    ['code'],                                         // <--- ESTE ES EL BOTÓN </> (Inline)
+    // ['link', 'image', 'video'],                       // Multimedia
+    // ['code'],                                         // <--- ESTE ES EL BOTÓN </> (Inline)
     ['clean']                                         // Borrar formato
   ]
 };
@@ -63,6 +65,7 @@ export class PostFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private location: Location
 
   ) {}
 
@@ -191,7 +194,8 @@ private handleHierarchy() {
   }
 
   onCancel(){
-  this.router.navigate(['']);
+  // this.router.navigate(['']);
+    this.location.back();
 }
 
 
