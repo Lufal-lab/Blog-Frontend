@@ -1,0 +1,96 @@
+$dark-bg: #1f2937;
+$cyan-fixed: #00e5bc;
+$blue-fixed: #2563eb;
+$white: #ffffff;
+
+.not-found-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 75vh; // Relative to viewport height
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.not-found-card {
+  width: 100%;
+  max-width: 35rem; // Consistent with your 45rem card but slightly narrower
+  padding: 2.5rem;
+  text-align: center;
+  border-radius: 1rem;
+
+  // Custom Error Visual
+  .error-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    .code {
+      font-size: 6rem;
+      font-weight: 800;
+      color: $dark-bg;
+      line-height: 1;
+      letter-spacing: -0.3rem;
+    }
+
+    .divider {
+      width: 4rem;
+      height: 0.4rem;
+      background: $cyan-fixed;
+      margin-top: 0.5rem;
+      border-radius: 1rem;
+    }
+  }
+
+  .post-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 1rem;
+    justify-content: center;
+  }
+
+  .post-excerpt {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #444;
+    margin-bottom: 2rem;
+  }
+
+  .home-btn {
+    background-color: #0ea5e9;
+    color: white;
+    padding: 0.5rem 2rem;
+    font-weight: 500;
+    border-radius: 2rem;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-0.1rem);
+      background-color: darken($blue-fixed, 10%);
+    }
+
+    mat-icon {
+      margin-right: 0.5rem;
+      font-size: 1.2rem;
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+  }
+}
+
+// Responsive adjustments using rems
+@media (max-width: 35rem) {
+  .not-found-card {
+    padding: 1.5rem;
+
+    .error-visual .code {
+      font-size: 4.5rem;
+    }
+
+    .post-title {
+      font-size: 1.5rem;
+    }
+  }
+}

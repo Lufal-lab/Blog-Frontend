@@ -17,10 +17,12 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+import { NotFoundComponent } from './features/static/not-found/not-found.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,
