@@ -84,10 +84,11 @@ export class ErrorInterceptor implements HttpInterceptor {
         // 5. Manejo general de otros estados
         switch (error.status) {
           case 401:
-            if (!isLoginUrl) {
+            if (!isLoginUrl && !isCheckSessionUrl) {
               this.alert.warning('Session expired. Please login again.');
-              authService.logout();
-              this.router.navigate(['/auth/login']);
+              // authService.logout();
+              authService.completeLogoutCleanup();
+              this.router.navigate(['/posts']);
             }
             break;
 
