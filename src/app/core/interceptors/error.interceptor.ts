@@ -1,99 +1,124 @@
-import { Injectable } from '@angular/core';
+
+import { Injectable, Injector } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AlertService } from '../services/alert.service';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
   constructor(
     private router: Router,
-    private alert: AlertService
+    private alert: AlertService,
+    private injector: Injector
   ) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    // IMPORTANTE: Aquí solo dejamos pasar la petición
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Log para que veas qué error llega
+        // Obtenemos el AuthService a través del injector para evitar la dependencia circular
+        const authService = this.injector.get(AuthService);
+
         console.error('Error detectado por el interceptor:', error.status);
 
-        let errorMessage = 'An error occurred';
         const isLoginUrl = request.url.includes('/api/users/login/');
         const isCheckSessionUrl = request.url.includes('/api/users/me/');
         const isLogoutUrl = request.url.includes('/api/users/logout/');
 
-        // Caso 0: Servidor apagado o error de red
+        // 1. Gestionar errores de Logout
+        // if (isLogoutUrl && (error.status === 401 || error.status === 403)) {
+        //   this.router.navigate(['/auth/login']);
+        //   return throwError(() => error);
+        // }
+
+        if (isCheckSessionUrl) {
+        return throwError(() => error);
+      }
+
+        if (isLogoutUrl) {
+          if (error.status === 403) {
+              // Si es 403, permitimos que el flujo siga al punto 4 (el de CSRF)
+              // No redirigimos todavía para que el refreshSession haga su trabajo.
+          } else if (error.status === 401) {
+              authService.completeLogoutCleanup();
+              return throwError(() => error);
+          }
+        }
+
+        // 2. Caso 0: Servidor apagado o error de red (CORS o Proxy fallando)
         if (error.status === 0) {
-          errorMessage = 'Cannot connect to the server. Is the backend running?';
-          this.alert.error(errorMessage);
-        }
-
-        if (isLogoutUrl && (error.status === 401 || error.status === 403)) {
-          this.router.navigate(['/auth/login']);
+          this.alert.error('Cannot connect to the server. Is the backend running?');
           return throwError(() => error);
         }
 
+        // 3. Error en Login (Credenciales inválidas)
         if ((error.status === 401 || error.status === 400) && isLoginUrl) {
-          // Devolvemos el error al componente para que él lo maneje con su mensaje local
           return throwError(() => error);
         }
 
-        if (error.status === 403 && isCheckSessionUrl) {
-          // Silenciamos el error de "no logueado" al cargar la app
+        // // 4. Error 403: Problema de CSRF (Tu error actual)
+        // if (error.status === 403 && !isCheckSessionUrl) {
+        //   // Si no tenemos token, refrescamos la sesión para que el backend nos envíe la cookie
+        //   authService.refreshSession();
+        //   this.alert.warning('Security token issue. Please try your action again.');
+        //   return throwError(() => error);
+        // }
+
+        if (error.status === 403 && !isCheckSessionUrl) {
+
+          // 🟢 CAMBIO: Solo alertar y refrescar si es una operación de escritura
+          const isWriteOperation = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method);
+
+          if (isWriteOperation) {
+            authService.refreshSession();
+            this.alert.warning('Security token issue. Please try your action again.');
+          }
+
+          // Si es un GET (como posts), simplemente devolvemos el error en silencio
           return throwError(() => error);
         }
-        else {
-          // Manejo de otros estados
-          switch (error.status) {
-            case 0:
-            case 504: // Gateway Timeout (Proxy fallando)
-              this.alert.error('Cannot connect to the server. Is the backend running?');
-              break;
-            case 401:
+
+        // 5. Manejo general de otros estados
+        switch (error.status) {
+          case 401:
+            if (!isLoginUrl) {
               this.alert.warning('Session expired. Please login again.');
+              authService.logout();
               this.router.navigate(['/auth/login']);
-              break;
-            case 403:
-              this.alert.error('You do not have permission.');
-              break;
-            case 500:
-              this.alert.error('Internal server error.');
-              break;
-            default:
-            let backMsg = 'Unexpected error';
+            }
+            break;
 
+          case 500:
+            this.alert.error('Internal server error on the backend.');
+            break;
 
+          case 504:
+            this.alert.error('Gateway Timeout. The server is not responding.');
+            break;
+
+          default:
+            // Si el error tiene un objeto con mensajes detallados (típico de Django Rest Framework)
             if (error.error && typeof error.error === 'object') {
               const errors = error.error;
-
-              // Extraemos las llaves y sus mensajes
               const extractedMessages = Object.keys(errors).map(key => {
                 const value = errors[key];
                 const cleanValue = Array.isArray(value) ? value.join(' ') : value;
-
-                // Formateamos para que diga "Campo: Mensaje"
-                // Capitalizamos la primera letra de la key (ej: title -> Title)
                 const formattedKey = key.charAt(0).toUpperCase() + key.slice(1);
                 return `${formattedKey}: ${cleanValue}`;
               });
 
               if (extractedMessages.length > 0) {
-                // Si hay varios campos con error, los separamos con un salto de línea o un pipe
-                backMsg = extractedMessages.join(' | ');
+                this.alert.error(extractedMessages.join(' | '));
               }
             } else if (typeof error.error === 'string') {
-              backMsg = error.error;
+              this.alert.error(error.error);
             }
-
-            this.alert.error(backMsg);
             break;
-          }
         }
 
-        // ¡ESTO ES VITAL! Retornamos el error para que el componente no se quede esperando
         return throwError(() => error);
       })
     );
