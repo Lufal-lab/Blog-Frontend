@@ -1,4 +1,5 @@
 
+
 import { Injectable, Injector } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -19,7 +20,6 @@ export class ErrorInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Obtenemos el AuthService a través del injector para evitar la dependencia circular
         const authService = this.injector.get(AuthService);
 
         console.error('Error detectado por el interceptor:', error.status);
@@ -28,65 +28,63 @@ export class ErrorInterceptor implements HttpInterceptor {
         const isCheckSessionUrl = request.url.includes('/api/users/me/');
         const isLogoutUrl = request.url.includes('/api/users/logout/');
 
-        // 1. Gestionar errores de Logout
-        // if (isLogoutUrl && (error.status === 401 || error.status === 403)) {
-        //   this.router.navigate(['/auth/login']);
-        //   return throwError(() => error);
-        // }
-
         if (isCheckSessionUrl) {
-        return throwError(() => error);
-      }
-
-        if (isLogoutUrl) {
-          if (error.status === 403) {
-              // Si es 403, permitimos que el flujo siga al punto 4 (el de CSRF)
-              // No redirigimos todavía para que el refreshSession haga su trabajo.
-          } else if (error.status === 401) {
-              authService.completeLogoutCleanup();
-              return throwError(() => error);
-          }
+          return throwError(() => error);
         }
 
-        // 2. Caso 0: Servidor apagado o error de red (CORS o Proxy fallando)
+        if (isLogoutUrl) {
+          if (error.status === 401) {
+            authService.completeLogoutCleanup();
+            return throwError(() => error);
+          }
+          // Nota: El 403 de Logout ahora caerá en la lógica de abajo
+        }
+
+        // 1. Caso 0: Servidor apagado
         if (error.status === 0) {
           this.alert.error('Cannot connect to the server. Is the backend running?');
           return throwError(() => error);
         }
 
-        // 3. Error en Login (Credenciales inválidas)
+        // 2. Error en Login
         if ((error.status === 401 || error.status === 400) && isLoginUrl) {
           return throwError(() => error);
         }
 
-        // // 4. Error 403: Problema de CSRF (Tu error actual)
-        // if (error.status === 403 && !isCheckSessionUrl) {
-        //   // Si no tenemos token, refrescamos la sesión para que el backend nos envíe la cookie
-        //   authService.refreshSession();
-        //   this.alert.warning('Security token issue. Please try your action again.');
-        //   return throwError(() => error);
-        // }
-
+        // 3. Lógica Inteligente para 403 (Diferenciar CSRF de Permisos)
         if (error.status === 403 && !isCheckSessionUrl) {
+          // Revisamos si el error es de CSRF buscando en el cuerpo de la respuesta
+          const errorBody = JSON.stringify(error.error).toLowerCase();
 
-          // 🟢 CAMBIO: Solo alertar y refrescar si es una operación de escritura
-          const isWriteOperation = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method);
+          const isAuthCredentialsMissing =
+            errorBody.includes('authentication credentials were not provided');
 
-          if (isWriteOperation) {
-            authService.refreshSession();
-            this.alert.warning('Security token issue. Please try your action again.');
+          if (isAuthCredentialsMissing) {
+            this.alert.warning('Session expired. Please login again.');
+            authService.completeLogoutCleanup();
+            this.router.navigate(['/posts']); // o ['/login'] si prefieres
+            return throwError(() => error);
           }
 
-          // Si es un GET (como posts), simplemente devolvemos el error en silencio
-          return throwError(() => error);
+          const isCsrfError = errorBody.includes('csrf') || errorBody.includes('cookie');
+
+          if (isCsrfError) {
+            const isWriteOperation = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method);
+            if (isWriteOperation) {
+              authService.refreshSession();
+              this.alert.warning('Security token issue. Please try your action again.');
+              return throwError(() => error); // Cortamos aquí para el caso de CSRF
+            }
+          }
+          // Si NO es error de CSRF, permitimos que siga al 'switch' para mostrar
+          // el error de permisos real (ej: "You do not have permission")
         }
 
-        // 5. Manejo general de otros estados
+        // 4. Manejo general de otros estados
         switch (error.status) {
           case 401:
             if (!isLoginUrl && !isCheckSessionUrl) {
               this.alert.warning('Session expired. Please login again.');
-              // authService.logout();
               authService.completeLogoutCleanup();
               this.router.navigate(['/posts']);
             }
@@ -101,7 +99,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             break;
 
           default:
-            // Si el error tiene un objeto con mensajes detallados (típico de Django Rest Framework)
+            // --- AQUÍ SE MOSTRARÁ TU MENSAJE DE PERMISOS ("You do not have permission") ---
             if (error.error && typeof error.error === 'object') {
               const errors = error.error;
               const extractedMessages = Object.keys(errors).map(key => {

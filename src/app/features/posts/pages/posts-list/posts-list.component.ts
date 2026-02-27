@@ -42,13 +42,15 @@ export class PostsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadPosts();
 
-    // this.authService.authStatus().subscribe(isLoggedIn => {
-    //   if (!isLoggedIn) {
-    //     this.loadPosts();
-    //   }
-    // });
+    this.authService.authStatus().subscribe(isLoggedIn => {
+      if (!isLoggedIn) {
+        this.loadPosts();
+      }
+      else {
+        this.loadPosts();
+      }
+    });
   }
 
 

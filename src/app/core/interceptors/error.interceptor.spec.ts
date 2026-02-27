@@ -238,19 +238,23 @@ describe('ErrorInterceptor', () => {
     });
   });
 
-  it('should alert and refresh session on 403 (Forbidden) during POST', () => {
-    // Debe ser POST para que tu interceptor dispare la alerta de CSRF/Security
-    const req = new HttpRequest('POST', '/api/posts', {});
-    const error = new HttpErrorResponse({ status: 403 });
-    const next = createNext(throwError(() => error));
-
-    interceptor.intercept(req, next).subscribe({
-      error: () => {
-        expect(authServiceSpy.refreshSession).toHaveBeenCalled();
-        expect(alertService.warning).toHaveBeenCalledWith('Security token issue. Please try your action again.');
-      }
-    });
+  it('should alert and refresh session on 403 (Forbidden) during POST with CSRF error', () => {
+  const req = new HttpRequest('POST', '/api/posts', {});
+  const error = new HttpErrorResponse({
+    status: 403,
+    error: { detail: 'CSRF cookie not set.' }
   });
+
+  const next = createNext(throwError(() => error));
+
+  interceptor.intercept(req, next).subscribe({
+    error: () => {
+      expect(authServiceSpy.refreshSession).toHaveBeenCalled();
+      expect(alertService.warning)
+        .toHaveBeenCalledWith('Security token issue. Please try your action again.');
+    }
+  });
+});
 
   it('should alert on 500 Internal Server Error', () => {
     const req = new HttpRequest('GET', '/api/test');
