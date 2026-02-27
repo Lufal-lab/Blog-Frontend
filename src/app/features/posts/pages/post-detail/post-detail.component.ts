@@ -217,6 +217,7 @@ loadCommentsByPage(page: number): void {
     this.postsService.deletePost(this.post.id).subscribe(() => {
       this.postDeleted.emit(this.post.id);
       this.alertService.success('Post deleted');
+      this.router.navigate(['/posts']);
     });
   }
 
